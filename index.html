@@ -67,7 +67,7 @@
     <article id="post-dagger" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/07/dagger/" class="article-date">
-  <time datetime="2016-07-07T09:22:46.000Z" itemprop="datePublished">2016-07-07</time>
+  <time datetime="2016-07-07T13:09:57.000Z" itemprop="datePublished">2016-07-07</time>
 </a>
     
   </div>
@@ -78,7 +78,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/07/dagger/">详解Dagger2，其实很简单</a>
+      <a class="article-title" href="/2016/07/07/dagger/">详解Dagger2系列之开始篇：磨刀不误砍柴工</a>
     </h1>
   
 
@@ -92,7 +92,7 @@
 </blockquote>
 <p>那么长一段话，看的我是泪流满面：</p>
 <p>Dagger是为Android和Java平台提供的一个完全静态的，在编译时进行依赖注入的框架，原来是由Square公司维护的然后现在把这堆东西扔给Google维护了。Dagger解决了基于反射带来的开发和性能上的问题（因为Dagger并没有用反射来做依赖注入）blabla。。。。说了那么多，其实就是告诉我们这家伙可以用来搞依赖注入哦</p>
-<p>依赖注入，搞过Spring的人肯定都知道这是啥，SpringMVC里用到了大量依赖注入，鉴于gay们都是做Android，让我们共饮此杯，聊一聊依赖注入。</p>
+<p>依赖注入，搞过Spring的人肯定都知道这是啥，SpringMVC里用到了大量依赖注入，鉴于gay们都是做Android，让我们共饮此杯，聊一聊依赖注入,熟悉依赖注入的同学戳这里(<a href="http://www.baidu.com" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a>)。</p>
 <h2 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h2><p>   我们在做项目时，经常需要在一个对象里去创建另一个对象的示例，这种行为是产生耦合的常见形式，对于一个大型项目来说，过多的相互依赖会导致代码难以维护，很容易就会碰到修改一个小需求需要大面积的修改各种代码，特别是代码原来不是自己维护的，撸着代码的你就开始问候别人家的亲友了。。。。</p>
 <p>   举个栗子<br>   我们现在有家Coffee Shop</p>
 <p>   这个是我们的业务核心咖啡机CoffeeMachine</p>
@@ -106,12 +106,52 @@
 <p>这时候SimpleMarker升级了  ：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleMaker implements CoffeeMaker &#123;</span><br><span class="line">    Cooker cooker;  //现在需要咖啡师来制作咖啡了</span><br><span class="line"></span><br><span class="line">    public SimpleMaker(Cooker cooker)&#123;</span><br><span class="line">        this.cooker = cooker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String makeCoffee() &#123;</span><br><span class="line">        return cooker.make();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>基于目前的情况，我们制作咖啡的流程发生了变化，原来的业务随着Cooker的加入发生了改变，但细心的小伙伴会发现目前还有一个地方受到了影响，那就是我们的CoffeeMachie，看这段代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">private CoffeeMaker maker;</span><br><span class="line"></span><br><span class="line">//构造方法  </span><br><span class="line">public CoffeeMachine(Cooker cooker)&#123;</span><br><span class="line">    maker = new SimpleMaker(cooker);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>   我们的SimpleMake升级了，业务波动影响到了我们的CoffeeMachine，这时候不得不对CoffeeMachine也进行修改：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class CoffeeMachine &#123;</span><br><span class="line">    private CoffeeMaker maker;</span><br><span class="line"></span><br><span class="line">    public CoffeeMachine(Cooker cooker)&#123;</span><br><span class="line">        maker = new SimpleMaker(cooker);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String makeCoffee()&#123;</span><br><span class="line">        return maker.makeCoffee();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>   这时候我们的CoffeeMachine就懵逼了，你的业务升级就升级呗，为毛我制造CoffeeMachine的过程也要变动，非常的不愿意。。但迫于老板的压力。最后还是给整改了。很明显，这是一个不合适的流程，简单的一个业务的升级，还要找我们的机器制造厂来帮你修改，那如果业务非常复杂，引用了SimpleMaker的可不仅仅是CoffeeMachine一个，那是不是每个引用的地方都需要进行修改，业务庞大的情况下，这种修改就是致命的，不仅需要做大量没有意义的体力劳动来修改，还可能导致大片业务代码的变动直接增加测试的成本，其他接收这个需求的开发GG直接得跪键盘了，一个SimpleMakere的改动对CoffeeMachine产生了直接的影响，肯定有什么地方是不对的。原因就是CoffeeMachine里的CoffeeMaker是自己new出来的。这就是一个很不好的地方。</p>
+<p>   这时候我们的CoffeeMachine就懵逼了，你的业务升级就升级呗，为毛我制造CoffeeMachine的过程也要变动，非常的不愿意。。但迫于老板的压力。最后还是给整改了。很明显，这是一个不合适的流程，简单的一个业务的升级，还要找我们的机器制造厂来帮你修改，那如果业务非常复杂，引用了SimpleMaker的可不仅仅是CoffeeMachine一个，那是不是每个引用的地方都需要进行修改，业务庞大的情况下，这种修改就是致命的，不仅需要做大量没有意义的体力劳动来修改，还可能导致大片业务代码的变动直接增加测试的成本，其他接收这个需求的开发GG直接得跪键盘了，一个SimpleMakere的改动对CoffeeMachine产生了直接的影响，肯定有什么地方是不对的。原因就是CoffeeMachine里的CoffeeMaker是自己new出来的。这就是一个很不好的地方。<br>   这种糟糕的实例引用的方式我们称之为硬初始化（Hard init），和硬编码（Hard coding）一样，都是糟糕代码滋生的好方法，Hard init不仅增加了各个模块的耦合，还让单元测试变得更加困难了。<br>   就在这时，我们的依赖注入降临了。依赖注入主要有三种途径，eg<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class CoffeeMachinWithInjection implements InjectMaker&#123;</span><br><span class="line">    private CoffeeMaker maker;</span><br><span class="line"></span><br><span class="line">    /*依赖注入的3种常见形式</span><br><span class="line">     *No.1  构造函数注入</span><br><span class="line">     */</span><br><span class="line">    public CoffeeMachinWithInjection(CoffeeMaker maker)&#123;</span><br><span class="line">        this.maker = maker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //No.2  Setter注入</span><br><span class="line">    public void setMaker(CoffeeMaker maker)&#123;</span><br><span class="line">        this.maker = maker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // //No.3 接口注入</span><br><span class="line">    @Override</span><br><span class="line">    public void injectMaker(CoffeeMaker maker) &#123;</span><br><span class="line">        this.maker = maker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String makeCoffee()&#123;</span><br><span class="line">        return maker.makeCoffee();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中，InjectMarker接口内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface InjectMaker &#123;</span><br><span class="line">    void injectMaker(CoffeeMaker maker);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>是不是很简单，说白了就是不要在需要依赖的类中通过new来创建依赖而是通过方法提供的参数注入进来，这样我们的需要依赖的类和提供依赖的类的实现方法分隔开了，一切又变得如此美好咯。</p>
+<p>不过这种手动提供依赖也是很繁杂的工作，充满的浓浓的重复体力劳动的气息，如何来尽量减少这些冗余代码的制作呢，答案就是Dagger！</p>
+<h4 id="第一部分到此结束。"><a href="#第一部分到此结束。" class="headerlink" title="第一部分到此结束。"></a>第一部分到此结束。</h4><p><a href="http://www.baidu.com" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/07/07/dagger/" data-id="ciqcarfd80000mg3dlcurankk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/07/07/dagger/" data-id="ciqcc4hg800008g3dp3cvclmu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-dagger2 second" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/07/dagger2 second/" class="article-date">
+  <time datetime="2016-07-07T13:09:57.000Z" itemprop="datePublished">2016-07-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/07/dagger2 second/">详解Dagger2系列之撸码篇：横看成岭侧成峰</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="to-be-next"><a href="#to-be-next" class="headerlink" title="to be next"></a>to be next</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/07/07/dagger2 second/" data-id="ciqcc4hgg00028g3dnsiz3341" class="article-share-link">Share</a>
       
       
     </footer>
@@ -151,7 +191,11 @@
       <ul>
         
           <li>
-            <a href="/2016/07/07/dagger/">详解Dagger2，其实很简单</a>
+            <a href="/2016/07/07/dagger/">详解Dagger2系列之开始篇：磨刀不误砍柴工</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/07/dagger2 second/">详解Dagger2系列之撸码篇：横看成岭侧成峰</a>
           </li>
         
       </ul>
