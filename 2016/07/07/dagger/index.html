@@ -15,7 +15,7 @@ Dagger is a fully static, compile-time dependency injection framework for both J
 <meta property="og:description" content="序言Dagger2是啥  Dagger2是啥，Google告诉我们：
 
 Dagger is a fully static, compile-time dependency injection framework for both Java and Android. It is an adaptation of an earlier versioncreated by Square and now">
-<meta property="og:updated_time" content="2016-07-07T13:12:33.647Z">
+<meta property="og:updated_time" content="2016-07-07T13:16:04.795Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="详解Dagger2系列之开始篇：磨刀不误砍柴工">
 <meta name="twitter:description" content="序言Dagger2是啥  Dagger2是啥，Google告诉我们：
@@ -58,9 +58,9 @@ Dagger is a fully static, compile-time dependency injection framework for both J
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -97,7 +97,7 @@ Dagger is a fully static, compile-time dependency injection framework for both J
 </blockquote>
 <p>那么长一段话，看的我是泪流满面：</p>
 <p>Dagger是为Android和Java平台提供的一个完全静态的，在编译时进行依赖注入的框架，原来是由Square公司维护的然后现在把这堆东西扔给Google维护了。Dagger解决了基于反射带来的开发和性能上的问题（因为Dagger并没有用反射来做依赖注入）blabla。。。。说了那么多，其实就是告诉我们这家伙可以用来搞依赖注入哦</p>
-<p>依赖注入，搞过Spring的人肯定都知道这是啥，SpringMVC里用到了大量依赖注入，鉴于gay们都是做Android，让我们共饮此杯，聊一聊依赖注入,熟悉依赖注入的同学戳这里(<a href="http://www.baidu.com" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a>)。</p>
+<p>依赖注入，搞过Spring的人肯定都知道这是啥，SpringMVC里用到了大量依赖注入，鉴于gay们都是做Android，让我们共饮此杯，聊一聊依赖注入,熟悉依赖注入的同学戳这里(<a href="https://dreamerhome.github.io/2016/07/07/dagger2%20second/" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a>)。</p>
 <h2 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h2><p>   我们在做项目时，经常需要在一个对象里去创建另一个对象的示例，这种行为是产生耦合的常见形式，对于一个大型项目来说，过多的相互依赖会导致代码难以维护，很容易就会碰到修改一个小需求需要大面积的修改各种代码，特别是代码原来不是自己维护的，撸着代码的你就开始问候别人家的亲友了。。。。</p>
 <p>   举个栗子<br>   我们现在有家Coffee Shop</p>
 <p>   这个是我们的业务核心咖啡机CoffeeMachine</p>
@@ -115,12 +115,12 @@ Dagger is a fully static, compile-time dependency injection framework for both J
 <p>其中，InjectMarker接口内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface InjectMaker &#123;</span><br><span class="line">    void injectMaker(CoffeeMaker maker);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>是不是很简单，说白了就是不要在需要依赖的类中通过new来创建依赖而是通过方法提供的参数注入进来，这样我们的需要依赖的类和提供依赖的类的实现方法分隔开了，一切又变得如此美好咯。</p>
 <p>不过这种手动提供依赖也是很繁杂的工作，充满的浓浓的重复体力劳动的气息，如何来尽量减少这些冗余代码的制作呢，答案就是Dagger！</p>
-<h4 id="第一部分到此结束。"><a href="#第一部分到此结束。" class="headerlink" title="第一部分到此结束。"></a>第一部分到此结束。</h4><p><a href="http://www.baidu.com" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a></p>
+<h4 id="第一部分到此结束。"><a href="#第一部分到此结束。" class="headerlink" title="第一部分到此结束。"></a>第一部分到此结束。</h4><p><a href="https://dreamerhome.github.io/2016/07/07/dagger2%20second/" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/07/07/dagger/" data-id="ciqcc4hg800008g3dp3cvclmu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/07/07/dagger/" data-id="ciqcc75p100006g3dsqax4q8x" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -131,7 +131,7 @@ Dagger is a fully static, compile-time dependency injection framework for both J
   
   
     <a href="/2016/07/07/dagger2 second/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Ancien</strong>
       <div class="article-nav-title">详解Dagger2系列之撸码篇：横看成岭侧成峰</div>
     </a>
   
@@ -164,7 +164,7 @@ Dagger is a fully static, compile-time dependency injection framework for both J
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -189,7 +189,7 @@ Dagger is a fully static, compile-time dependency injection framework for both J
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
