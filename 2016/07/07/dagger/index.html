@@ -1,0 +1,631 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Dagger2 依赖注入 Android Injection 解耦" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Dagger2是Google提供的一个很好的依赖注入的工具，我们可以通过给项目添加Dagger2来完成依赖的自动注入。详解Dadgger2系列，将从初学者角度出发，结合Dagger2的重点和难点，通过实战，为大家详细讲解Dagger2的使用和原理，以及如何运用到项目中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="详解Dagger2系列之开始篇：磨刀不误砍柴工">
+<meta property="og:url" content="http://yoursite.com/2016/07/07/dagger/index.html">
+<meta property="og:site_name" content="Dreamerhome的Blog">
+<meta property="og:description" content="Dagger2是Google提供的一个很好的依赖注入的工具，我们可以通过给项目添加Dagger2来完成依赖的自动注入。详解Dadgger2系列，将从初学者角度出发，结合Dagger2的重点和难点，通过实战，为大家详细讲解Dagger2的使用和原理，以及如何运用到项目中。">
+<meta property="og:updated_time" content="2016-07-08T09:30:35.655Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="详解Dagger2系列之开始篇：磨刀不误砍柴工">
+<meta name="twitter:description" content="Dagger2是Google提供的一个很好的依赖注入的工具，我们可以通过给项目添加Dagger2来完成依赖的自动注入。详解Dadgger2系列，将从初学者角度出发，结合Dagger2的重点和难点，通过实战，为大家详细讲解Dagger2的使用和原理，以及如何运用到项目中。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/07/dagger/"/>
+
+  <title> 详解Dagger2系列之开始篇：磨刀不误砍柴工 | Dreamerhome的Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-80517812-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Dreamerhome的Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-categories " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                详解Dagger2系列之开始篇：磨刀不误砍柴工
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-07T21:09:57+08:00" content="2016-07-07">
+              2016-07-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Dagger2/" itemprop="url" rel="index">
+                    <span itemprop="name">Dagger2</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h2><h3 id="Dagger2是啥"><a href="#Dagger2是啥" class="headerlink" title="Dagger2是啥"></a>Dagger2是啥</h3><p>  Dagger2是啥，Google告诉我们：</p>
+<blockquote>
+<p>Dagger is a fully static, compile-time dependency injection framework for both Java and Android. It is an adaptation of an earlier versioncreated by Square and now maintained by Google.<br>Dagger aims to address many of the development and performance issues that have plagued reflection-based solutions. More details can be found in this talk(slides) by +Gregory Kick.</p>
+</blockquote>
+<p>那么长一段话，看的我是泪流满面：</p>
+<p>Dagger是为Android和Java平台提供的一个完全静态的，在编译时进行依赖注入的框架，原来是由Square公司维护的然后现在把这堆东西扔给Google维护了。Dagger解决了基于反射带来的开发和性能上的问题（因为Dagger并没有用反射来做依赖注入）blabla。。。。说了那么多，其实就是告诉我们这家伙可以用来搞依赖注入哦</p>
+<p>依赖注入，搞过Spring的人肯定都知道这是啥，SpringMVC里用到了大量依赖注入，鉴于gay们都是做Android，让我们共饮此杯，聊一聊依赖注入,熟悉依赖注入的同学戳这里(<a href="https://dreamerhome.github.io/2016/07/07/dagger2%20second/" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a>)。</p>
+<h2 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h2><p>   我们在做项目时，经常需要在一个对象里去创建另一个对象的示例，这种行为是产生耦合的常见形式，对于一个大型项目来说，过多的相互依赖会导致代码难以维护，很容易就会碰到修改一个小需求需要大面积的修改各种代码，特别是代码原来不是自己维护的，撸着代码的你就开始问候别人家的亲友了。。。。</p>
+<p>   举个栗子<br>   我们现在有家Coffee Shop</p>
+<p>   这个是我们的业务核心咖啡机CoffeeMachine</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> /**</span><br><span class="line"> * 这是一个制作Coffee的例子</span><br><span class="line"> * CoffeeMaker是对制作Coffee过程的一个封装</span><br><span class="line"> * 制作Coffee需要实现CoffeeMarker的makeCoffee方法</span><br><span class="line"> */</span><br><span class="line">public class CoffeeMachine &#123;</span><br><span class="line">    private CoffeeMaker maker;</span><br><span class="line"></span><br><span class="line">    public CoffeeMachine()&#123;</span><br><span class="line">        maker = new SimpleMaker();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String makeCoffee()&#123;</span><br><span class="line">        return maker.makeCoffee();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CoffeeMaker<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface CoffeeMaker &#123;</span><br><span class="line">    String makeCoffee();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>SimpleCoffeeMaker<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleMaker implements CoffeeMaker &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String makeCoffee() &#123;</span><br><span class="line">        return  &quot;Coffee is made by SimperMarker&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>   小店新开张，我们的咖啡都是咖啡机做出来的，物美价廉啦。。。。</p>
+<p>   这家CoffeeShop很简单，在CoffeeMachine中可以看到，CoffeeMachine持有了一个CoffeeMaker接口，而具体制作Coffee的过程是由实现了CoffeeMaker的自动咖啡机SimpleMaker实现的，CoffeeMaker是在构造方法中new 出了一个实现CoffeeMaker接口的SimpleCoffee。当前的功能很简单，这么写看着也没什么问题。</p>
+<p>   随着业务的扩展，消费人群改变了，自动咖啡机也完全不能满足现有客户的需求，这个时候我们的CoffeeShop该进行业务升级咯 。</p>
+<p>   经过董事会决定，公司决定投入大笔资金，雇佣咖啡师来制作咖啡。<br>   我们的咖啡师：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Cooker &#123;</span><br><span class="line">    String name; //咖啡师名字</span><br><span class="line">    String coffeeKind; //制作咖啡的类型</span><br><span class="line">   </span><br><span class="line">    public Cooker(String name,String coffeeKind)&#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.coffeeKind = coffeeKind;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String make()&#123;</span><br><span class="line">        return name +&quot; make &quot; + coffeeKind; //咖啡师制作Coffee的过程</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这时候SimpleMarker升级了  ：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleMaker implements CoffeeMaker &#123;</span><br><span class="line">    Cooker cooker;  //现在需要咖啡师来制作咖啡了</span><br><span class="line"></span><br><span class="line">    public SimpleMaker(Cooker cooker)&#123;</span><br><span class="line">        this.cooker = cooker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String makeCoffee() &#123;</span><br><span class="line">        return cooker.make();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>基于目前的情况，我们制作咖啡的流程发生了变化，原来的业务随着Cooker的加入发生了改变，但细心的小伙伴会发现目前还有一个地方受到了影响，那就是我们的CoffeeMachie，看这段代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">private CoffeeMaker maker;</span><br><span class="line"></span><br><span class="line">//构造方法  </span><br><span class="line">public CoffeeMachine(Cooker cooker)&#123;</span><br><span class="line">    maker = new SimpleMaker(cooker);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>   我们的SimpleMake升级了，业务波动影响到了我们的CoffeeMachine，这时候不得不对CoffeeMachine也进行修改：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class CoffeeMachine &#123;</span><br><span class="line">    private CoffeeMaker maker;</span><br><span class="line"></span><br><span class="line">    public CoffeeMachine(Cooker cooker)&#123;</span><br><span class="line">        maker = new SimpleMaker(cooker);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String makeCoffee()&#123;</span><br><span class="line">        return maker.makeCoffee();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>   这时候我们的CoffeeMachine就懵逼了，你的业务升级就升级呗，为毛我制造CoffeeMachine的过程也要变动，非常的不愿意。。但迫于老板的压力。最后还是给整改了。很明显，这是一个不合适的流程，简单的一个业务的升级，还要找我们的机器制造厂来帮你修改，那如果业务非常复杂，引用了SimpleMaker的可不仅仅是CoffeeMachine一个，那是不是每个引用的地方都需要进行修改，业务庞大的情况下，这种修改就是致命的，不仅需要做大量没有意义的体力劳动来修改，还可能导致大片业务代码的变动直接增加测试的成本，其他接收这个需求的开发GG直接得跪键盘了，一个SimpleMakere的改动对CoffeeMachine产生了直接的影响，肯定有什么地方是不对的。原因就是CoffeeMachine里的CoffeeMaker是自己new出来的。这就是一个很不好的地方。<br>   这种糟糕的实例引用的方式我们称之为硬初始化（Hard init），和硬编码（Hard coding）一样，都是糟糕代码滋生的好方法，Hard init不仅增加了各个模块的耦合，还让单元测试变得更加困难了。<br>   就在这时，我们的依赖注入降临了。依赖注入主要有三种途径，eg<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class CoffeeMachinWithInjection implements InjectMaker&#123;</span><br><span class="line">    private CoffeeMaker maker;</span><br><span class="line"></span><br><span class="line">    /*依赖注入的3种常见形式</span><br><span class="line">     *No.1  构造函数注入</span><br><span class="line">     */</span><br><span class="line">    public CoffeeMachinWithInjection(CoffeeMaker maker)&#123;</span><br><span class="line">        this.maker = maker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //No.2  Setter注入</span><br><span class="line">    public void setMaker(CoffeeMaker maker)&#123;</span><br><span class="line">        this.maker = maker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // //No.3 接口注入</span><br><span class="line">    @Override</span><br><span class="line">    public void injectMaker(CoffeeMaker maker) &#123;</span><br><span class="line">        this.maker = maker;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String makeCoffee()&#123;</span><br><span class="line">        return maker.makeCoffee();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中，InjectMarker接口内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface InjectMaker &#123;</span><br><span class="line">    void injectMaker(CoffeeMaker maker);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>是不是很简单，说白了就是不要在需要依赖的类中通过new来创建依赖而是通过方法提供的参数注入进来，这样我们的需要依赖的类和提供依赖的类的实现方法分隔开了，一切又变得如此美好咯。</p>
+<p>不过这种手动提供依赖也是很繁杂的工作，充满的浓浓的重复体力劳动的气息，如何来尽量减少这些冗余代码的制作呢，答案就是Dagger！</p>
+<h4 id="第一部分到此结束。"><a href="#第一部分到此结束。" class="headerlink" title="第一部分到此结束。"></a>第一部分到此结束。</h4><p><a href="https://dreamerhome.github.io/2016/07/07/dagger2%20second/" target="_blank" rel="external">下一篇：详解Dagger2系列之撸码篇：横看成岭侧成峰</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dagger2/" rel="tag">#Dagger2</a>
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Injection/" rel="tag">#Injection</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/01/index/" rel="next" title="Dreamerhome的首页">
+                <i class="fa fa-chevron-left"></i> Dreamerhome的首页
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/img.jpg"
+               alt="Linsity" />
+          <p class="site-author-name" itemprop="name">Linsity</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dagger2是啥"><span class="nav-number">1.1.</span> <span class="nav-text">Dagger2是啥</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖注入"><span class="nav-number">2.</span> <span class="nav-text">依赖注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一部分到此结束。"><span class="nav-number">2.0.1.</span> <span class="nav-text">第一部分到此结束。</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Linsity</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
