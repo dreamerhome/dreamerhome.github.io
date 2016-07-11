@@ -86,16 +86,16 @@
 
 <meta name="description" content="本文主要讲解Dagger2的配置，以及一些基础注解的用法，然后分析apt生成的源码来了解Dagger2是怎么做到依赖注入的。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="详解Dagger2系列之开始篇：横看成岭侧成峰">
+<meta property="og:title" content="详解Dagger2系列之撸码篇：横看成岭侧成峰">
 <meta property="og:url" content="http://yoursite.com/2016/07/11/dagger for code/index.html">
 <meta property="og:site_name" content="ITKobe24's Blog">
 <meta property="og:description" content="本文主要讲解Dagger2的配置，以及一些基础注解的用法，然后分析apt生成的源码来了解Dagger2是怎么做到依赖注入的。">
-<meta property="og:image" content="http://yoursite.com/imgs/injection.jpg">
-<meta property="og:updated_time" content="2016-07-11T09:26:59.406Z">
+<meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/injection.jpg">
+<meta property="og:updated_time" content="2016-07-11T10:01:45.901Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="详解Dagger2系列之开始篇：横看成岭侧成峰">
+<meta name="twitter:title" content="详解Dagger2系列之撸码篇：横看成岭侧成峰">
 <meta name="twitter:description" content="本文主要讲解Dagger2的配置，以及一些基础注解的用法，然后分析apt生成的源码来了解Dagger2是怎么做到依赖注入的。">
-<meta name="twitter:image" content="http://yoursite.com/imgs/injection.jpg">
+<meta name="twitter:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/injection.jpg">
 
 
 
@@ -118,7 +118,7 @@
 
   <link rel="canonical" href="http://yoursite.com/2016/07/11/dagger for code/"/>
 
-  <title> 详解Dagger2系列之开始篇：横看成岭侧成峰 | ITKobe24's Blog </title>
+  <title> 详解Dagger2系列之撸码篇：横看成岭侧成峰 | ITKobe24's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +257,7 @@
             
             
               
-                详解Dagger2系列之开始篇：横看成岭侧成峰
+                详解Dagger2系列之撸码篇：横看成岭侧成峰
               
             
           </h1>
@@ -303,7 +303,7 @@
 
           
           
-             <span id="/2016/07/11/dagger for code/" class="leancloud_visitors" data-flag-title="详解Dagger2系列之开始篇：横看成岭侧成峰">
+             <span id="/2016/07/11/dagger for code/" class="leancloud_visitors" data-flag-title="详解Dagger2系列之撸码篇：横看成岭侧成峰">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -344,7 +344,7 @@
 <li>@Component Component一般用来标注接口，被标注了Component的接口在编译时会产生相应的类的实例来作为提供依赖方和需要依赖方之间的桥梁，把相关依赖注入到其中。</li>
 </ul>
 <p>这些标注看起来可能比较抽像，为了方便各位理解，送图一张来说明这些标注的作用和之间的关系：</p>
-<p><img src="imgs/injection.jpg" alt=""></p>
+<p><img src="http://7xw8pi.com1.z0.glb.clouddn.com/injection.jpg" alt=""></p>
 <p>图片主要分为三部分，左边的是依赖提供者，比如我们用Module标注的类或者用Injection标注的构造函数，右边的是依赖的需求方，例如我们用inject标注的变量，而Component则是连接两者的桥梁，Component从依赖提供者提供依赖，并把这些依赖注入相关的类中，Dagge正如其名，就像把匕首让依赖能够非常犀利的注入到需要它的地方。</p>
 <p>说了那么多前言，虽然这些注解都有各自独特的作用，单用起来其实很简单，接下来我们将进一步地讲解这些标注的作用，just show you code。在使用之前，只要大致明白这些标注的意义就行了，简单的依赖注入通过这几个标注就能完成。</p>
 <h3 id="简单的栗子"><a href="#简单的栗子" class="headerlink" title="简单的栗子"></a>简单的栗子</h3><p>还是从我们的CoffeeShop说起，现在，我们有一个Activity：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public class OriginActivity extends Activity implements View.OnClickListener&#123;</span><br><span class="line">    @BindView(R.id.btnMakeCoffee)</span><br><span class="line">    Button btnMakeCoffee;</span><br><span class="line">    @BindView(R.id.tvCoffee)</span><br><span class="line">    TextView tvCoffee;</span><br><span class="line"></span><br><span class="line">    CoffeeMachine coffeeMachine;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_simple);</span><br><span class="line">        ButterKnife.bind(this);</span><br><span class="line">        Cooker cooker = new Cooker(&quot;James&quot;,&quot;Espresso&quot;);</span><br><span class="line">        coffeeMachine = new CoffeeMachine(cooker);</span><br><span class="line">        initView();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void initView()&#123;</span><br><span class="line">        btnMakeCoffee.setOnClickListener(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private String makeCoffee()&#123;</span><br><span class="line">        return coffeeMachine.makeCoffee();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onClick(View v) &#123;</span><br><span class="line">        if(R.id.btnMakeCoffee == v.getId())&#123;</span><br><span class="line">            tvCoffee.setText(makeCoffee());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
