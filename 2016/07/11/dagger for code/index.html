@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="ITKobe24's Blog">
 <meta property="og:description" content="本文主要讲解Dagger2的配置，以及一些基础注解的用法，然后分析apt生成的源码来了解Dagger2是怎么做到依赖注入的。">
 <meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/injection.jpg">
-<meta property="og:updated_time" content="2016-07-11T10:01:45.901Z">
+<meta property="og:updated_time" content="2016-07-14T03:49:26.247Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="详解Dagger2系列之撸码篇：横看成岭侧成峰">
 <meta name="twitter:description" content="本文主要讲解Dagger2的配置，以及一些基础注解的用法，然后分析apt生成的源码来了解Dagger2是怎么做到依赖注入的。">
@@ -363,8 +363,22 @@
 <p>这里需要注意，我们必须传入SimpleActivity自己，不能把SimpleActivity的父类定义到方法里作为参数来接收SimpleActivity，从语法上来说是正确的，但你会发现这样做没办法完成注入，这是Dagger2的一个坑，别给踩着了。</p>
 </blockquote>
 <p>注入器也制作完了，就剩下最后一步：“注入”。<br>这步也很简单，只需要在我们的Oncreate里这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private SimpleComponent simpleComponent;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        simpleComponent = DaggerSimpleComponent.builder().simpleModule(getModule()).build();</span><br><span class="line">        simpleComponent.inject(this);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
 <p>这里有个地方需要注意一下，DaggerSimpleComponent是什么，我们压根就没写这个东西。对，这就是Dagger2在编译时生成的类，Dagger2就是通过这些编译生成的东西完成了依赖的注入，那么Dagger2在编译时产生的类是怎么工作的呢，我们将在下一篇来叙述这个问题。</p>
-<p>//todo for inject and module</p>
+</blockquote>
+<p>这里再说明一个问题，我们有两种方式可以提供依赖，一个是注解了@Inject的构造方法，一个是在Module里提供的依赖，那么Dagger2是怎么选择依赖提供的呢，规则是这样的：</p>
+<ul>
+<li>步骤1：查找Module中是否存在创建该类的方法。</li>
+<li>步骤2：若存在创建类方法，查看该方法是否存在参数</li>
+<li>步骤2.1：若存在参数，则按从步骤1开始依次初始化每个参数</li>
+<li>步骤2.2：若不存在参数，则直接初始化该类实例，一次依赖注入到此结束</li>
+<li><p>步骤3：若不存在创建类方法，则查找Inject注解的构造函数，看构造函数是否存在参数</p>
+</li>
+<li><p>步骤3.1：若存在参数，则从步骤1开始依次初始化每个参数</p>
+</li>
+<li>步骤3.2：若不存在参数，则直接初始化该类实例，一次依赖注入到此结束</li>
+</ul>
+<p>概括一下就是从注解了@Inject的对象开始，从Module和注解过的构造方法中获得实例，若在获取该实例的过程中需要其他类的实例，则继续获取被需要类的实例对象的依赖，同样是从Module和标注过的构造方法中获取，并不断递归这个过程直到所有被需要的类的实例创建完成，在这个过程中Module的优先级高于注解过的构造方法。明白了这个原理之后老奶奶都会用这几个标签了。</p>
 <h3 id="Scope和-Qulifier"><a href="#Scope和-Qulifier" class="headerlink" title="@Scope和@Qulifier"></a>@Scope和@Qulifier</h3><p>上面把四个简单的注解的用法都讲完了，但很多时候这几个注解并不能涵盖我们所有的场景，这时就需要@Scope和@Qulifier来帮忙了。</p>
 <p>有的同学可能在用Module的时候会有疑惑，为什么方法怎么命名都行，那时怎么区分它为谁提供依赖呢。答案是根据返回类型来确定的，当某个对象需要注入依赖时，Dagger2就会根据Module中标记了@Provide的方法的返回值来确定由谁为这个变量提供实例。那问题来了，如果有两个一样的返回类型，该用谁呢。我们把这种场景叫做依赖迷失，见名知意，Dagger这时候就不知道用谁来提供依赖，自然就迷失了。所以我们引入了@Qulifier这个东西，通过自定义Qulifier，可以告诉Dagger2去需找具体的依赖提供者。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Qualifier</span><br><span class="line">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">public @interface A &#123;&#125;</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Qualifier</span><br><span class="line">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">public @interface B &#123;&#125;</span><br></pre></td></tr></table></figure>
