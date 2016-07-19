@@ -1,0 +1,785 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="多渠道包 美团多渠道包 Android gradle" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="还在用python打多渠道包？还敢说你是做Android，都不用gradle,gradle构建的工程打美团多渠道包当然要用gradle来写(其实是我不会python)，哥还有gradle，浪里个浪">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle仿美团打多渠道包">
+<meta property="og:url" content="http://yoursite.com/2016/07/19/multichannels/index.html">
+<meta property="og:site_name" content="ITKobe24's Blog">
+<meta property="og:description" content="还在用python打多渠道包？还敢说你是做Android，都不用gradle,gradle构建的工程打美团多渠道包当然要用gradle来写(其实是我不会python)，哥还有gradle，浪里个浪">
+<meta property="og:updated_time" content="2016-07-19T08:20:30.834Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gradle仿美团打多渠道包">
+<meta name="twitter:description" content="还在用python打多渠道包？还敢说你是做Android，都不用gradle,gradle构建的工程打美团多渠道包当然要用gradle来写(其实是我不会python)，哥还有gradle，浪里个浪">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/19/multichannels/"/>
+
+  <title> Gradle仿美团打多渠道包 | ITKobe24's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-80517812-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">ITKobe24's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Love Coding,Love sproting</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-categories " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Gradle仿美团打多渠道包
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-19T15:50:21+08:00" content="2016-07-19">
+              2016-07-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/多渠道包/" itemprop="url" rel="index">
+                    <span itemprop="name">多渠道包</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/19/multichannels/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/19/multichannels/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/19/multichannels/" class="leancloud_visitors" data-flag-title="Gradle仿美团打多渠道包">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="用Gradle仿美团打多渠道包"><a href="#用Gradle仿美团打多渠道包" class="headerlink" title="用Gradle仿美团打多渠道包"></a>用Gradle仿美团打多渠道包</h1><p>前端时间在做新产品时由于产品发展迅速，再次碰到了打多渠道包的问题，因此重新回顾了打多渠道包的方式。</p>
+<p>早在前几年就有很多打多渠道包的黑科技，相信很多人都了解过，我也不再多重述了，好几种主流的打多渠道包的方式都是可以商业化使用的，但也有各自的优缺点，最后经过仔细考虑，我还是选择了用美团的打多渠道包的方式，原因很简单，安全性相对高一些，还不用重新签名，一键式操作就行了 。如何仿美团打多渠道包，这个网上教程真是一大堆，不过我看了之后都觉得不太适合自己用，原因就是大多数人都是用python写的打渠道包脚本，对于懒癌晚期的我来说太麻烦了，我们的Android项目都是用gradle构建的，然后再通过集成平台自动化打包，直接写在gradle脚本里不就得了，一键式build，方便。</p>
+<h2 id="gradle简介"><a href="#gradle简介" class="headerlink" title="gradle简介"></a>gradle简介</h2><p>gradle是啥，就是用groovy写的用来构建项目的东东呗，具体是啥我也说不清，自行Google（哈哈哈哈哈哈哈哈），个人觉得groovy还是通俗易懂的，下面的内容都是groovy写的哦。</p>
+<h2 id="Don’t-BB-Just-show-your-code"><a href="#Don’t-BB-Just-show-your-code" class="headerlink" title="Don’t BB,Just show your code"></a>Don’t BB,Just show your code</h2><p>废话不多说，完成这个功能很简单，和把大象装进冰箱里差不多呢。</p>
+<h3 id="gradle脚本"><a href="#gradle脚本" class="headerlink" title="gradle脚本"></a>gradle脚本</h3><p>新建一个gradle脚本文件，命名为multiple_channel.gradle</p>
+<p>第一步：清空apk生成目录，免得太多垃圾文件影响操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def cleanOutputDir() &#123;</span><br><span class="line">    File apkDir = new File(&quot;app/build/outputs/apk&quot;)</span><br><span class="line">    if (apkDir.exists() &amp;&amp; apkDir.isDirectory()) &#123;</span><br><span class="line">        apkDir.eachFile &#123; outputFile -&gt;</span><br><span class="line">            if (outputFile.name.endsWith(&quot;apk&quot;)) &#123;</span><br><span class="line">                outputFile.delete()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>第二步：读取打包参数里的渠道号,我们把需要打的渠道加入到app_channels里作为参数传进来，并保存在一个list里备用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def makeChannels() &#123;</span><br><span class="line">    if (project.hasProperty(&quot;app_channels&quot;)) &#123;</span><br><span class="line">        appChannels = project.properties.get(&quot;app_channels&quot;)</span><br><span class="line">        //split channels by &apos;,&apos;</span><br><span class="line">        def channels = appChannels.split(&apos;,&apos;)</span><br><span class="line"> def channel</span><br><span class="line">        for (int i = 0; i &lt; channels.length; i++) &#123;</span><br><span class="line">            channel = channels[i]</span><br><span class="line">     channelNameList.add(channel)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        println &quot;INFO:No Channel added&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后及时最后一步咯，根据list创建相同个数的apk和相对应的空文件，包装组合一下就好了了，这块内容太多，代码就不单独贴出来了，直接看最后给的文件吧。。这里有个我添加的点，为了让这种打渠道包的方式更加的安全，我把空文件的文件名再次进行了加密，具体的加密算法大家可自己选择。</p>
+<p>整个gradle脚本就写完了，然后再把它加到我们app的gradle里就好了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br></pre></td><td class="code"><pre><span class="line">import java.util.zip.ZipEntry</span><br><span class="line">import java.util.zip.ZipInputStream</span><br><span class="line">import java.util.zip.ZipOutputStream</span><br><span class="line"></span><br><span class="line">ext &#123;</span><br><span class="line">    channelNameList = [] </span><br><span class="line">    appChannels = &quot;&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">android &#123;</span><br><span class="line">    //clean dir output</span><br><span class="line">    cleanOutputDir()</span><br><span class="line">    //add new channel files</span><br><span class="line">    makeChannels()</span><br><span class="line"></span><br><span class="line">    applicationVariants.all &#123; variant -&gt;</span><br><span class="line">        variant.outputs.each &#123; output -&gt;</span><br><span class="line">            output.assemble.doLast &#123;</span><br><span class="line">                def curBuildType = output.baseName</span><br><span class="line">                if (curBuildType == null) &#123;</span><br><span class="line">                    curBuildType = &apos;debug&apos;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                def zipFile = output.outputFile</span><br><span class="line">                def channelName = &quot;&quot;</span><br><span class="line">                def apkName = output.outputFile.name</span><br><span class="line">                for (String key : channelNameList) &#123;</span><br><span class="line">                    channelName = key</span><br><span class="line">                    apkName = &quot;MyApp_$&#123;channelName&#125;_$&#123;defaultConfig.versionCode&#125;.apk&quot;</span><br><span class="line">                    //Step1.copy new apk prepare to write channel in it</span><br><span class="line">                    def newZipFile = new File(zipFile.parent + File.separator + newApkName)</span><br><span class="line">                    newZipFile.createNewFile()</span><br><span class="line">                    //Step2.create empty file</span><br><span class="line">                    def newChannelID = encrypt(channelID)</span><br><span class="line">                    def channelHolderFileName = &quot;MyChannel$&#123;newChannelID&#125;&quot;</span><br><span class="line">                    File channelHolderFile = new File(zipFile.parent + File.separator + channelHolderFileName)</span><br><span class="line">                    channelHolderFile.createNewFile()</span><br><span class="line">                    def channelHolderFileInputStream = channelHolderFile.newInputStream()</span><br><span class="line">                    modifyZipFileByMetaInfo(zipFile, newZipFile, channelHolderFileName, channelHolderFileInputStream, null)</span><br><span class="line">                    //Step3.delete temp files</span><br><span class="line">                    channelHolderFile.delete()</span><br><span class="line">                    println &quot;INFO: replace channel file at META-INF as $&#123;channelHolderFileName&#125; of apk[$&#123;newZipFile.name&#125;]&quot;</span><br><span class="line">                &#125;</span><br><span class="line">                //Step5.work finished and delete useless file</span><br><span class="line">                if (curBuildType.startsWith(&apos;release&apos;) || curBuildType.startsWith(&apos;beta&apos;)) &#123;</span><br><span class="line">                    zipFile.delete()</span><br><span class="line">                    println &quot;INFO: delete default file at $&#123;zipFile.parent&#125; of apk[$&#123;zipFile.name&#125;]&quot;</span><br><span class="line">                &#125;</span><br><span class="line">                println &quot;INFO: Work done , total channel is $&#123;channelNameMap.size()&#125;&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">String encrypt(String oldName) &#123;</span><br><span class="line">    //TODO　you can add encryption to make your multichannel apks more safety</span><br><span class="line">    return yourSafetyName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def cleanOutputDir() &#123;</span><br><span class="line">    File apkDir = new File(&quot;app/build/outputs/apk&quot;)</span><br><span class="line">    if (apkDir.exists() &amp;&amp; apkDir.isDirectory()) &#123;</span><br><span class="line">        apkDir.eachFile &#123; outputFile -&gt;</span><br><span class="line">            if (outputFile.name.endsWith(&quot;apk&quot;)) &#123;</span><br><span class="line">                outputFile.delete()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//eg app_chanels:Channel001,Channel002,Channel002.....you can add IDs as many as you wanna</span><br><span class="line">def makeChannels() &#123;</span><br><span class="line">    if (project.hasProperty(&quot;app_channels&quot;)) &#123;</span><br><span class="line">        appChannels = project.properties.get(&quot;app_channels&quot;)</span><br><span class="line">        //split channels by &apos;,&apos;</span><br><span class="line">        def channels = appChannels.split(&apos;,&apos;)</span><br><span class="line"> def channel</span><br><span class="line">        for (int i = 0; i &lt; channels.length; i++) &#123;</span><br><span class="line">            channel = channels[i]</span><br><span class="line">     channelNameList.add(channel)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        println &quot;INFO:No Channel added&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * modify zip files</span><br><span class="line"> * */</span><br><span class="line">def modifyZipFileByMetaInfo(File zipFile,</span><br><span class="line">                            File newZipFile,</span><br><span class="line">                            String fileToAddOrOverwrite,</span><br><span class="line">                            InputStream fileToAddOrOverwriteInputStreams,</span><br><span class="line">                            String fileToDelete) throws IOException &#123;</span><br><span class="line">    ZipOutputStream out = null;</span><br><span class="line">    try &#123;</span><br><span class="line">        out = new ZipOutputStream(new FileOutputStream(newZipFile));</span><br><span class="line">        // add existing ZIP entry to output stream</span><br><span class="line">        ZipInputStream zin = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            zin = new ZipInputStream(new FileInputStream(zipFile));</span><br><span class="line">            ZipEntry entry = null;</span><br><span class="line">            while ((entry = zin.getNextEntry()) != null) &#123;</span><br><span class="line">                String name = entry.getName();</span><br><span class="line"></span><br><span class="line">                // check if the file should be deleted</span><br><span class="line">                if (fileToDelete != null) &#123;</span><br><span class="line">                    boolean ignoreFile = false;</span><br><span class="line">                    if (name.equalsIgnoreCase(fileToDelete)) &#123;</span><br><span class="line">                        ignoreFile = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (ignoreFile) &#123;</span><br><span class="line">                        continue;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                // check if the file should be kept as it is</span><br><span class="line">                boolean keepFileUnchanged = true;</span><br><span class="line">                if (fileToAddOrOverwrite != null) &#123;</span><br><span class="line">                    if (name.equalsIgnoreCase(fileToAddOrOverwrite)) &#123;</span><br><span class="line">                        keepFileUnchanged = false;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                if (keepFileUnchanged) &#123;</span><br><span class="line">                    // copy the file as it is</span><br><span class="line">                    out.putNextEntry(new ZipEntry(name));</span><br><span class="line">                    copy(zin, out);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (zin != null) zin.close();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // add the modified or added files to the zip file</span><br><span class="line">        if (fileToAddOrOverwrite != null) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                out.putNextEntry(new ZipEntry(&quot;META-INF/&quot; + fileToAddOrOverwrite));</span><br><span class="line">                copy(fileToAddOrOverwriteInputStreams, out);</span><br><span class="line">                out.closeEntry();</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                if (fileToAddOrOverwriteInputStreams != null) fileToAddOrOverwriteInputStreams.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (out != null) out.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int copy(InputStream input, OutputStream output)</span><br><span class="line">        throws IOException &#123;</span><br><span class="line">    def DEFAULT_BUFFER_SIZE = 1024 * 4</span><br><span class="line">    byte[] buffer = new byte[DEFAULT_BUFFER_SIZE]</span><br><span class="line">    int count = 0;</span><br><span class="line">    int n = 0;</span><br><span class="line">    while (-1 != (n = input.read(buffer))) &#123;</span><br><span class="line">        output.write(buffer, 0, n);</span><br><span class="line">        count += n;</span><br><span class="line">    &#125;</span><br><span class="line">    return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这个gradle脚本写的很简单，各位可以根据自己项目的需求和实际情况来进行相应的修改，最基础的东西就在这里了，怎么扩展得看各位玩的高不高端咯 </p>
+</blockquote>
+<p>当然，除了添加gradle文件外我们还需要再代码中添加相关解析该空文件的代码，这个和python脚本方式写的都是通用的，大家自取之。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Linsity WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Linsity Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/多渠道包/" rel="tag">#多渠道包</a>
+          
+            <a href="/tags/gradle/" rel="tag">#gradle</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/11/dagger for code/" rel="next" title="详解Dagger2系列之撸码篇：横看成岭侧成峰">
+                <i class="fa fa-chevron-left"></i> 详解Dagger2系列之撸码篇：横看成岭侧成峰
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/19/multichannels/"
+           data-title="Gradle仿美团打多渠道包" data-url="http://yoursite.com/2016/07/19/multichannels/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/img.jpg"
+               alt="Linsity" />
+          <p class="site-author-name" itemprop="name">Linsity</p>
+          <p class="site-description motion-element" itemprop="description">Life is not only coding , and sporting</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#用Gradle仿美团打多渠道包"><span class="nav-number">1.</span> <span class="nav-text">用Gradle仿美团打多渠道包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#gradle简介"><span class="nav-number">1.1.</span> <span class="nav-text">gradle简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Don’t-BB-Just-show-your-code"><span class="nav-number">1.2.</span> <span class="nav-text">Don’t BB,Just show your code</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gradle脚本"><span class="nav-number">1.2.1.</span> <span class="nav-text">gradle脚本</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Linsity</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dreamerhome"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("oHLqUClmxU4wE3izqp2A0v3n-gzGzoHsz", "PiMxPpOCHIseO74AqSejhm5k");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+</body>
+</html>
