@@ -1,0 +1,802 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android,View,事件分发，事件冲突" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Android开发，触控无处不在。对于一些 不咋看源码的同学来说，多少对这块都会有一些疑惑。View事件的分发机制，不仅在做业务需求中会碰到这些问题，在一些面试笔试题中也常有人问，可谓是老生常谈了。我以前也看过很多人写的这方面的文章，不是说的太啰嗦就是太模糊，还有一些在细节上写的也有争议，故再次重新整理一下这块内容，十分钟让你搞明白View事件的分发机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="十分钟彻底弄明白View事件分发机制">
+<meta property="og:url" content="http://yoursite.com/2016/07/25/viewEventDispatch/index.html">
+<meta property="og:site_name" content="ITKobe24's Blog">
+<meta property="og:description" content="Android开发，触控无处不在。对于一些 不咋看源码的同学来说，多少对这块都会有一些疑惑。View事件的分发机制，不仅在做业务需求中会碰到这些问题，在一些面试笔试题中也常有人问，可谓是老生常谈了。我以前也看过很多人写的这方面的文章，不是说的太啰嗦就是太模糊，还有一些在细节上写的也有争议，故再次重新整理一下这块内容，十分钟让你搞明白View事件的分发机制。">
+<meta property="og:updated_time" content="2016-07-25T11:26:45.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="十分钟彻底弄明白View事件分发机制">
+<meta name="twitter:description" content="Android开发，触控无处不在。对于一些 不咋看源码的同学来说，多少对这块都会有一些疑惑。View事件的分发机制，不仅在做业务需求中会碰到这些问题，在一些面试笔试题中也常有人问，可谓是老生常谈了。我以前也看过很多人写的这方面的文章，不是说的太啰嗦就是太模糊，还有一些在细节上写的也有争议，故再次重新整理一下这块内容，十分钟让你搞明白View事件的分发机制。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/25/viewEventDispatch/"/>
+
+  <title> 十分钟彻底弄明白View事件分发机制 | ITKobe24's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-80517812-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">ITKobe24's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Love Coding,Love sproting</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-categories " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                十分钟彻底弄明白View事件分发机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-25T18:46:54+08:00" content="2016-07-25">
+              2016-07-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/事件分发/" itemprop="url" rel="index">
+                    <span itemprop="name">事件分发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/25/viewEventDispatch/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/25/viewEventDispatch/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/25/viewEventDispatch/" class="leancloud_visitors" data-flag-title="十分钟彻底弄明白View事件分发机制">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="十分钟彻底弄明白View事件分发机制"><a href="#十分钟彻底弄明白View事件分发机制" class="headerlink" title="十分钟彻底弄明白View事件分发机制"></a>十分钟彻底弄明白View事件分发机制</h1><p>Android开发，触控无处不在。对于一些 不咋看源码的同学来说，多少对这块都会有一些疑惑。View事件的分发机制，不仅在做业务需求中会碰到这些问题，在一些面试笔试题中也常有人问，可谓是老生常谈了。我以前也看过很多人写的这方面的文章，不是说的太啰嗦就是太模糊，还有一些在细节上写的也有争议，故再次重新整理一下这块内容，十分钟让你搞明白View事件的分发机制。</p>
+<p>说白了这些触控的事件分发机制就是弄清楚三个方法，dispatchTouchEvent(),OnInterceptTouchEvent(),onTouchEvent(),和这三个方法与n个ViewGroup和View堆叠在一起的问题，再复杂的结构都能拆分成1个ViewGroup+1个View。</p>
+<p>其实ViewGroup和View都是大同小异，View只是没有了子容器，自然不存在拦截问题，dispatch也很简单，所以弄明白了ViewGroup其实就懂的差不多了。</p>
+<h2 id="三个关键方法"><a href="#三个关键方法" class="headerlink" title="三个关键方法"></a>三个关键方法</h2><h3 id="public-boolean-dispatchTouchEvent-MotionEvent-ev"><a href="#public-boolean-dispatchTouchEvent-MotionEvent-ev" class="headerlink" title="public boolean dispatchTouchEvent(MotionEvent ev)"></a>public boolean dispatchTouchEvent(MotionEvent ev)</h3><p>View/ViewGroup处理事件分发的发起者，View/ViewGroup接收到触控事件最先调起的就是这个方法，然后在该方法中判断是否处理拦截或是将事件分发给子容器</p>
+<h3 id="public-boolean-onInterceptTouchEvent-MotionEvent-ev"><a href="#public-boolean-onInterceptTouchEvent-MotionEvent-ev" class="headerlink" title="public boolean onInterceptTouchEvent(MotionEvent ev)"></a>public boolean onInterceptTouchEvent(MotionEvent ev)</h3><p>ViewGroup专用，通过该方法可以达到控件事件的分发方向，一般可以在该方法中判断将事件给ViewGroup独吞或是它继续传递给子容器，是处理事件冲突的最佳地点</p>
+<h3 id="public-boolean-onTouchEvent-MotionEvent-event"><a href="#public-boolean-onTouchEvent-MotionEvent-event" class="headerlink" title="public boolean onTouchEvent(MotionEvent event)"></a>public boolean onTouchEvent(MotionEvent event)</h3><p>触控事件的真正处理者，最后每个事件都会在这里被处理</p>
+<h2 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h2><p>时间分发机制的难点在哪，我觉得难的地方以下几点：三个方法调用规则，确定处理事件的对象以及事件冲突的解决方法。</p>
+<h4 id="事件传递规则"><a href="#事件传递规则" class="headerlink" title="事件传递规则"></a>事件传递规则</h4><p>一般一次点击会有一系列的MotionEvent，可以简单分为：down-&gt;move-&gt;….-&gt;move-&gt;up,当一次event分发到ViewGroup时，上述三个方法之间的 ViewGroup中调用顺序可以用一段简单代码表示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MotionEvent ev;//down or move or up or others...</span><br><span class="line">viewgroup.dispatchTouchEvent(ev);</span><br><span class="line"></span><br><span class="line">public boolean dispatchTouchEvent(MotionEvent ev)&#123;</span><br><span class="line"> boolean isConsumed = false;</span><br><span class="line">   if(onInterceptTouchEvent(ev))&#123;</span><br><span class="line">     isCousumed = this.onTouchEvent(ev);</span><br><span class="line">   &#125;else&#123;</span><br><span class="line">      isConsumed = childView.dispatchTouchEvent(ev);</span><br><span class="line">   &#125;</span><br><span class="line">   return isConsumed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>返回结果true表示事件被处理了，返回false表示没有处理。同一个层次中一般最多只有一个容器能够返回true（当然不排除用黑科技咯，有些大神在写牛逼开源控件的时候都会劫持掉MotionEvent来处理滑动效果和冲突等）。<br>上面的代码通俗易懂，看起来也很简单，一句话就能概括，ViewGroup收到事件后调用dispatch，在dispatch中先检查是否要拦截，若拦截则ViewGroup吃掉事件，否则交给有处理能力的子容器处理。</p>
+<p>不过，简单归简单，写成这样只是为了方便理解，ViewGroup的事件处理流程当然没这么简单，这里忽略了很多细节问题，接下来继续补充。回到上面说的，一系列事件我们经常处理的一般都是一个down，多个move和一个up,光靠上面的伪代码是没办法把这些问题都给完美解决，直接来看ViewGroup的dispatchTouchEvent。</p>
+<h4 id="onInterceptTouchEvent调用条件"><a href="#onInterceptTouchEvent调用条件" class="headerlink" title="onInterceptTouchEvent调用条件"></a>onInterceptTouchEvent调用条件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">final boolean intercepted;</span><br><span class="line">if (actionMasked == MotionEvent.ACTION_DOWN</span><br><span class="line">        || mFirstTouchTarget != null) &#123;</span><br><span class="line">    final boolean disallowIntercept = (mGroupFlags &amp; FLAG_DISALLOW_INTERCEPT) != 0;</span><br><span class="line">    if (!disallowIntercept) &#123;</span><br><span class="line">        intercepted = onInterceptTouchEvent(ev);</span><br><span class="line">        ev.setAction(action); // restore action in case it was changed</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        intercepted = false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    // There are no touch targets and this action is not an initial down</span><br><span class="line">    // so this view group continues to intercept touches.</span><br><span class="line">    intercepted = true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解释一下上面的代码，看起来好像很简单，但真的很简单吗。。</p>
+<p>onInterceptTouchEvent调用需要满足两个条件中的任意一个就有可能触发（当然只是有可能）：</p>
+<p>一个是在down的时候，另一个就是mFirstTouchTarget！=null，那mFirstTouchTarget何时不为空，有兴趣的同学可以看ViewGroup中的addTouchTarget这个方法的调用时机，mFirstTouchTarget就是在这里赋值的，源码太长我就不贴了。</p>
+<p>mFirstTouchTarget是用来保存ViewGroup中处理了事件的子View，即在上面伪代码中child.dispatchTouchEvent(ev)返回true的View，只要有子View的dispatch返回true，就不会为null，反之，若无子View处理，该对象即为null。当然，满足了上述两个条件还不行，必须还要满足!disallowIntercept。</p>
+<p>disallowIntercept这个变量很有意思，它的值主要受FLAG_DISALLOW_INTERCEPT这个标记影响，这个值可以被ViewGroup的子View设置，ViewGroup的子View如果调用了requestDisallowInterceptTouchEvent这个方法，会改变FLAG_DISALLOW_INTERCEPT，导致disallowIntercept这个值就是ture了，这种情况会跳过intercept,导致拦截失效。</p>
+<p>但这事还没了，FLAG_DISALLOW_INTERCEPT这个标记有一个重置的机制，查看ViewGroup源码可以看到，在处理MotionEvent.ACTION_DOWN的时候会重置这个标记导致disallowIntercept失效，是不是丧心病狂，上面的一段这么简单的代码有这么多幺蛾子，这里还能得到一个结论，ationDown的时候肯定可以执行onInterceptTouchEvent的。</p>
+<p>上面的两个有可能触发拦截的条件说完了，那么当两个条件都不满足的话就不会再调用拦截了，这种情况一般都是在ACTION_DOWN处理完之后没有子View当接盘侠接受后续事件，从上面的伪代码可以看出来，这时候ViewGroup自己就很被动了，需要自己来调用onTouchEvent来处理，这锅就自己背了。</p>
+<h4 id="孩子是谁的"><a href="#孩子是谁的" class="headerlink" title="孩子是谁的"></a>孩子是谁的</h4><p>继续来扩展我们的伪代码，拦截条件判断完之后，决定把事件继续传递给子View的时候，会调用childView.dispatchTouchEvent(ev)，问题来了，child是哪来的，继续看源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (!canViewReceivePointerEvents(child)</span><br><span class="line">   || !isTransformedTouchPointInView(x, y, child, null)) &#123;</span><br><span class="line">     ev.setTargetAccessibilityFocus(false);</span><br><span class="line">     continue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ViewGroup通过判断所有的子View是否可见是否在播放动画和是否在点击范围内来决定它是否能够有资格接受事件。只有满足条件的child才能够调用dispatch。</p>
+<p>再看伪代码，最后dispatch返回ViewGroup的isConsumed，若isConsume == true，说明ViewGroup处理了这个点击事件（ViewGroup自身或者子View处理的），并且这个系列的点击事件会继续传到这个ViewGroup来处理，若isConsume ==  false，ViewGroup没办法处理这个点击事件，那么这个系类的点击事件就和该ViewGroup无缘了。会把这个事件上抛给自己的父容器处理。</p>
+<p>伪代码说完了，ViewGroup的事件传递规则也就差不多说完了，这么看是不是很简单了。View相对于VIewGroup来说就更简单了，没有拦截方法，dispatch基本上是直接调用了自身的onTouchEvent，处理起来一点难度都木有呀。</p>
+<h4 id="一些没说到但也很重要的点"><a href="#一些没说到但也很重要的点" class="headerlink" title="一些没说到但也很重要的点"></a>一些没说到但也很重要的点</h4><p>上面解释的东西都很简单，是从一个ViewGroup+一个View开始的，事件分发的执行者是ViewGroup，子容器也只有一个View，但实际开发中当然没这么简单，不过不要怕，再复杂的情况也能够拆分成这种模式的，只不过层次多了一些递归复杂了一些而已，原理还是一样的。</p>
+<p>顺带补充几点：</p>
+<ul>
+<li>从用户点击屏幕开始触发一个系列的点击事件时，事件真正的传递流程是：Activity（PhoneWindow）-&gt;DecorView-&gt;ViewGroup-&gt;View,在到达ViewGroup之前还有一个DecorView，事件是从Activity传过来的，但这些东西其实和ViewGroup的原理是一样的，Activity能看做一个大的ViewGroup，当它的DecorView包含的所有子View没有人能够消耗事件的时候(这样说有漏洞，大家懂我的意思就行了)最后还是会交给Activity处理。</li>
+<li>事件冲突解决可以按照上面的原理在几个point中进行处理。最容易想到的处理的时机是在onInterceptTouchEvent里，比如当一个竖直方向滑动的ViewGroup里嵌套一个横向滑动的ViewGroup，可以在这里的ACTION_MOVE里来判断后续事件应该传递给谁处理，当然，也可以根据上面说的标记位FLAG_DISALLOW_INTERCEPT配合子View的dispatchTouchEvent来控制事件的流向，这都是比较容易想到的，不过看过别的大神，通过分享MotionEvent的方法来控制事件的流向，即在父容器中保存MotionEvent并在适当的时机传入子View自定义的事件处理方法来分享事件，也是可行的。</li>
+<li>任何View只要拒绝了一系列事件中的ACTION_DOWN（返回false），则后续事件都不会再传递过来了。但如果拒绝了其他的事件，后续事件还是可以传过来的，比如View某次ACTION_MOVE没处理，这个没处理的事件最后会被Activity消耗掉（而不是View的父容器），但后续的事件还是会继续传给该View。</li>
+<li>合理的利用ACTION_CANCEL能够控制一个系列事件的生命周期，让事件处理更加灵活。</li>
+</ul>
+<p>理解事件分发的机制只要明白上面的原理基本就够用了，github上很多牛逼的大神写的各种炫酷的自定义控件的事分发根据这些也能够看明白，当然还有很多扩展的东西和更深入的内容由于篇幅的关系在这里就不罗嗦了，更重要的还是去看源码吧。<br>最后送各位一句经典：纸上得来终觉浅，绝知此事要躬行！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Linsity WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Linsity Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+            <a href="/tags/View/" rel="tag">#View</a>
+          
+            <a href="/tags/事件分发，事件冲突/" rel="tag">#事件分发，事件冲突</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/22/parcelable/" rel="next" title="老司机开车带你体验Parcelable到底有多快">
+                <i class="fa fa-chevron-left"></i> 老司机开车带你体验Parcelable到底有多快
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/25/viewEventDispatch/"
+           data-title="十分钟彻底弄明白View事件分发机制" data-url="http://yoursite.com/2016/07/25/viewEventDispatch/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/img.jpg"
+               alt="Linsity" />
+          <p class="site-author-name" itemprop="name">Linsity</p>
+          <p class="site-description motion-element" itemprop="description">Life is not only coding , and sporting</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#十分钟彻底弄明白View事件分发机制"><span class="nav-number">1.</span> <span class="nav-text">十分钟彻底弄明白View事件分发机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#三个关键方法"><span class="nav-number">1.1.</span> <span class="nav-text">三个关键方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#public-boolean-dispatchTouchEvent-MotionEvent-ev"><span class="nav-number">1.1.1.</span> <span class="nav-text">public boolean dispatchTouchEvent(MotionEvent ev)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#public-boolean-onInterceptTouchEvent-MotionEvent-ev"><span class="nav-number">1.1.2.</span> <span class="nav-text">public boolean onInterceptTouchEvent(MotionEvent ev)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#public-boolean-onTouchEvent-MotionEvent-event"><span class="nav-number">1.1.3.</span> <span class="nav-text">public boolean onTouchEvent(MotionEvent event)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心问题"><span class="nav-number">1.2.</span> <span class="nav-text">核心问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#事件传递规则"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">事件传递规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onInterceptTouchEvent调用条件"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">onInterceptTouchEvent调用条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#孩子是谁的"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">孩子是谁的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些没说到但也很重要的点"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">一些没说到但也很重要的点</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Linsity</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"dreamerhome"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("oHLqUClmxU4wE3izqp2A0v3n-gzGzoHsz", "PiMxPpOCHIseO74AqSejhm5k");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+</body>
+</html>
