@@ -84,16 +84,15 @@
 
 
 
-<meta name="description" content="1234567891011121314//url:&amp;quot;https://api.github.com/users?since=0&amp;quot;        Observable.just(&amp;quot;users?since=0&amp;quot;)                .map(string -&amp;gt; &amp;#123;                    String result[] =">
-<meta property="og:type" content="article">
-<meta property="og:title" content="rxjava">
-<meta property="og:url" content="http://yoursite.com/2016/08/11/rxjava/index.html">
+<meta name="description" content="Life is not only coding , and sporting">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ITKobe24's Blog">
+<meta property="og:url" content="http://yoursite.com/categories/Http/index.html">
 <meta property="og:site_name" content="ITKobe24's Blog">
-<meta property="og:description" content="1234567891011121314//url:&amp;quot;https://api.github.com/users?since=0&amp;quot;        Observable.just(&amp;quot;users?since=0&amp;quot;)                .map(string -&amp;gt; &amp;#123;                    String result[] =">
-<meta property="og:updated_time" content="2016-08-11T09:04:38.446Z">
+<meta property="og:description" content="Life is not only coding , and sporting">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rxjava">
-<meta name="twitter:description" content="1234567891011121314//url:&amp;quot;https://api.github.com/users?since=0&amp;quot;        Observable.just(&amp;quot;users?since=0&amp;quot;)                .map(string -&amp;gt; &amp;#123;                    String result[] =">
+<meta name="twitter:title" content="ITKobe24's Blog">
+<meta name="twitter:description" content="Life is not only coding , and sporting">
 
 
 
@@ -114,9 +113,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/08/11/rxjava/"/>
+  <link rel="canonical" href="http://yoursite.com/categories/Http/"/>
 
-  <title> rxjava | ITKobe24's Blog </title>
+  <title> 分类: Http | ITKobe24's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -146,7 +145,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,158 +233,47 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <section id="posts" class="posts-collapse">
+    <div class="collection-title">
+      <h2 >
+        Http
+        <small>分类</small>
+      </h2>
+    </div>
 
     
-      <header class="post-header">
+      
 
+  <article class="post post-type-categories" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
         
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
+            <a class="post-title-link" href="/2016/08/11/httpprotec/" itemprop="url">
               
-                rxjava
+                <span itemprop="name">Android DEV Http协议手册</span>
               
-            
-          </h1>
+            </a>
         
+      </h1>
 
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-11T17:04:05+08:00" content="2016-08-11">
-              2016-08-11
-            </time>
-          </span>
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2016-08-11T17:04:05+08:00"
+              content="2016-08-11" >
+          08-11
+        </time>
+      </div>
 
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/11/rxjava/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/11/rxjava/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/08/11/rxjava/" class="leancloud_visitors" data-flag-title="rxjava">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//url:&quot;https://api.github.com/users?since=0&quot;</span><br><span class="line">        Observable.just(&quot;users?since=0&quot;)</span><br><span class="line">                .map(string -&gt; &#123;</span><br><span class="line">                    String result[] = string.split(&quot;\\?&quot;);</span><br><span class="line">                    result[1] = (result[1].split(&quot;=&quot;))[1];</span><br><span class="line">                    return result;</span><br><span class="line">                &#125;)</span><br><span class="line">                .flatMap(result -&gt; getUserList(result[0], result[1]))</span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(userList -&gt; &#123;</span><br><span class="line">                    tvName1.setText(userList.get(0).getId());</span><br><span class="line">                    tvName2.setText(userList.get(1).getId());</span><br><span class="line">                &#125;);</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    <div>
-      
-        
-<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
-    <img id="wechat_subscriber_qcode" src="/uploads/weixin.jpg" alt="Linsity wechat" style="width: 200px; max-width: 100%;"/>
-    <div>欢迎添加微信好友共同交流学习！</div>
-</div>
-
-
-      
-    </div>
-
-    <div>
-      
-        
-  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
-    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-      <span>赏</span>
-    </button>
-    <div id="QR" style="display: none;">
-      
-        <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Linsity WeChat Pay"/>
-          <p>微信打赏</p>
-        </div>
-      
-      
-        <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="/images/alipay.jpg" alt="Linsity Alipay"/>
-          <p>支付宝打赏</p>
-        </div>
-      
-    </div>
-  </div>
-
-
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2016/08/02/annotaion/" rel="next" title="一分钟秒懂注解">
-                <i class="fa fa-chevron-left"></i> 一分钟秒懂注解
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-          </div>
-        </div>
-      
-
-      
-      
-
-    </footer>
+    </header>
   </article>
 
 
+    
+  </section>
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
+  
+
 
 
           </div>
@@ -393,14 +281,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2016/08/11/rxjava/"
-           data-title="rxjava" data-url="http://yoursite.com/2016/08/11/rxjava/">
-      </div>
-    
-  </div>
-
 
         </div>
         
@@ -420,17 +300,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/img.jpg"
@@ -449,7 +320,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -458,7 +329,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -480,17 +351,6 @@
 
       </section>
 
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-            
-              
-            
-            
-              <p class="post-toc-empty">此文章未包含目录</p>
-            
-          </div>
-        </section>
       
 
     </div>
@@ -587,10 +447,6 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
-
 
   
 
