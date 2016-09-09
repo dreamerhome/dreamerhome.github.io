@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="ITKobe24's Blog">
 <meta property="og:description" content="Dagger2是Google提供的一个很好的依赖注入的工具，我们可以通过给项目添加Dagger2来完成依赖的自动注入。详解Dadgger2系列，将从初学者角度出发，结合Dagger2的重点和难点，通过实战，为大家详细讲解Dagger2的使用和原理，以及如何运用到项目中。">
 <meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/injection.jpg">
-<meta property="og:updated_time" content="2016-09-09T05:45:16.137Z">
+<meta property="og:updated_time" content="2016-09-09T05:48:31.723Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="依赖注入神器：Dagger2详解系列">
 <meta name="twitter:description" content="Dagger2是Google提供的一个很好的依赖注入的工具，我们可以通过给项目添加Dagger2来完成依赖的自动注入。详解Dadgger2系列，将从初学者角度出发，结合Dagger2的重点和难点，通过实战，为大家详细讲解Dagger2的使用和原理，以及如何运用到项目中。">
@@ -397,7 +397,7 @@
 <blockquote>
 <p>这里需要注意，我们必须传入SimpleActivity自己，不能把SimpleActivity的父类定义到方法里作为参数来接收SimpleActivity，从语法上来说是正确的，但你会发现这样做没办法完成注入，这是Dagger2的一个坑，别给踩着了。</p>
 </blockquote>
-<p>注入器也制作完了，就剩下最后一步：“注入”。<br>这步也很简单，只需要在我们的Oncreate里这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private SimpleComponent simpleComponent;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        simpleComponent = DaggerSimpleComponent.builder().simpleModule(getModule()).build();</span><br><span class="line">        simpleComponent.inject(this);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>注入器也制作完了，就剩下最后一步：“注入”。<br>这步也很简单，只需要在我们的onCreate里这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private SimpleComponent simpleComponent;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        simpleComponent = DaggerSimpleComponent.builder().simpleModule(getModule()).build();</span><br><span class="line">        simpleComponent.inject(this);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>这里有个地方需要注意一下，DaggerSimpleComponent是什么，我们压根就没写这个东西。对，这就是Dagger2在编译时生成的类，Dagger2就是通过这些编译生成的东西完成了依赖的注入，那么Dagger2在编译时产生的类是怎么工作的呢，我们将在下一篇来叙述这个问题。</p>
 </blockquote>
@@ -479,9 +479,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Dagger2/" rel="tag">#Dagger2</a>
-          
             <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Dagger2/" rel="tag">#Dagger2</a>
           
             <a href="/tags/Injection/" rel="tag">#Injection</a>
           
