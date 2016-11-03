@@ -87,8 +87,8 @@
 <meta name="description" content="一些Android开发同学在初级阶段都停留在调用API的层面上，在调用了一系列Api之后做出一些很炫酷的功能或者是很轻松地就完成了一些需求的独立开发时感到非常的满足，这很OK，但很多时候都忽略了这些功能仅仅停留在Api的调用上，任何一个刚入门的开发都能在查找一些资料后通过调用api完成一些复杂的功能，但这仅仅是会调用而已，长期停留在这种阶段虽然也能完成一些业务上的需求，但对个人能力来说是一种很大的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="教你看源码之入门系列：最简单的源码----Handler源码解读">
-<meta property="og:url" content="http://yoursite.com/2016/09/20/handlerSource/index.html">
-<meta property="og:site_name" content="ITKobe24's Blog">
+<meta property="og:url" content="http://yoursite.com/2016/09/20/handlersource/index.html">
+<meta property="og:site_name" content="中关村科比的博客（The Blog of Kobe in Zhongguancun）">
 <meta property="og:description" content="一些Android开发同学在初级阶段都停留在调用API的层面上，在调用了一系列Api之后做出一些很炫酷的功能或者是很轻松地就完成了一些需求的独立开发时感到非常的满足，这很OK，但很多时候都忽略了这些功能仅仅停留在Api的调用上，任何一个刚入门的开发都能在查找一些资料后通过调用api完成一些复杂的功能，但这仅仅是会调用而已，长期停留在这种阶段虽然也能完成一些业务上的需求，但对个人能力来说是一种很大的">
 <meta property="og:updated_time" content="2016-09-20T06:09:10.895Z">
 <meta name="twitter:card" content="summary">
@@ -114,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/09/20/handlerSource/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/09/20/handlersource/"/>
 
-  <title> 教你看源码之入门系列：最简单的源码----Handler源码解读 | ITKobe24's Blog </title>
+  <title> 教你看源码之入门系列：最简单的源码----Handler源码解读 | 中关村科比的博客（The Blog of Kobe in Zhongguancun） </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,11 +156,11 @@
   <div class="custom-logo-site-title">
     <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <span class="site-title">ITKobe24's Blog</span>
+      <span class="site-title">中关村科比的博客（The Blog of Kobe in Zhongguancun）</span>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
-  <p class="site-subtitle">Love Coding,Love Sporting</p>
+  <p class="site-subtitle"></p>
 </div>
 
 <div class="site-nav-toggle">
@@ -295,20 +295,13 @@
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/20/handlerSource/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/20/handlerSource/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
 
           
           
-             <span id="/2016/09/20/handlerSource/" class="leancloud_visitors" data-flag-title="教你看源码之入门系列：最简单的源码----Handler源码解读">
+             <span id="/2016/09/20/handlersource/" class="leancloud_visitors" data-flag-title="教你看源码之入门系列：最简单的源码----Handler源码解读">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -423,6 +416,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2016/11/03/nestedscrolling/" rel="prev" title="Android NestedScrolling嵌套滑动机制">
+                Android NestedScrolling嵌套滑动机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -447,10 +444,6 @@
 
           
   <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2016/09/20/handlerSource/"
-           data-title="教你看源码之入门系列：最简单的源码----Handler源码解读" data-url="http://yoursite.com/2016/09/20/handlerSource/">
-      </div>
     
   </div>
 
@@ -489,12 +482,12 @@
                src="/images/img.jpg"
                alt="Linsity" />
           <p class="site-author-name" itemprop="name">Linsity</p>
-          <p class="site-description motion-element" itemprop="description">Life is not only coding , and sporting</p>
+          <p class="site-description motion-element" itemprop="description"></p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -502,7 +495,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -511,7 +504,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -654,30 +647,9 @@
 
   
 
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"dreamerhome"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-    <script src="/js/src/hook-duoshuo.js"></script>
-  
 
 
+  
 
 
 
