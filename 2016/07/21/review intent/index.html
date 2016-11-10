@@ -1,0 +1,782 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Intent,基础知识，面试" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="本文主要是回顾Intent的一些基础的用法以及Intent-filter一些属性的匹配规则和相关用法，并指出一些面试的时候容易被问到的点和一些容易忽略的地方。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Intent重新回顾">
+<meta property="og:url" content="http://yoursite.com/2016/07/21/review intent/index.html">
+<meta property="og:site_name" content="中关村科比的博客（The Blog of Kobe in Zhongguancun）">
+<meta property="og:description" content="本文主要是回顾Intent的一些基础的用法以及Intent-filter一些属性的匹配规则和相关用法，并指出一些面试的时候容易被问到的点和一些容易忽略的地方。">
+<meta property="og:updated_time" content="2016-07-21T02:43:46.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Intent重新回顾">
+<meta name="twitter:description" content="本文主要是回顾Intent的一些基础的用法以及Intent-filter一些属性的匹配规则和相关用法，并指出一些面试的时候容易被问到的点和一些容易忽略的地方。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/21/review intent/"/>
+
+  <title> Android Intent重新回顾 | 中关村科比的博客（The Blog of Kobe in Zhongguancun） </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-80517812-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">中关村科比的博客（The Blog of Kobe in Zhongguancun）</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-categories " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android Intent重新回顾
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-21T10:33:47+08:00" content="2016-07-21">
+              2016-07-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/基础知识/" itemprop="url" rel="index">
+                    <span itemprop="name">基础知识</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/21/review intent/" class="leancloud_visitors" data-flag-title="Android Intent重新回顾">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Android基础回顾之Intent"><a href="#Android基础回顾之Intent" class="headerlink" title="Android基础回顾之Intent"></a>Android基础回顾之Intent</h1><p>Intent是我们在开发中最经常用到的工具之一，不仅是各大组件内通信的工具，还是组件间交互的重要媒介。在平时开发的过程中可能很熟悉Intent的用法了，但有些细节可能会在开发中被忽略。</p>
+<p>我们最常使用Intent都是在Activity交互时使用的，在我平时开发需求的过程中，90%都是这么用的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = new Intent(...);</span><br><span class="line">startActivity(intent);</span><br></pre></td></tr></table></figure></p>
+<p>所以Intent的其他不常用的东西忘的都差不多了，是时候来回顾一下咯</p>
+<h2 id="Intent的属性"><a href="#Intent的属性" class="headerlink" title="Intent的属性"></a>Intent的属性</h2><p>大家都知道显示和隐式启动Activity的方式，隐式启动用的少，重新熟悉一下咯。</p>
+<h3 id="component"><a href="#component" class="headerlink" title="component"></a>component</h3><p>component用来接收跳转Activity的信息，把需要跳转的两个Activity信息放入component中就能显式启动Activity.不过我平时都不用这个东西，就如上面写的，直接把Activity丢到Intent的构造函数里就好了。mark一下有这东西的存在免得哪天有人问。对了，还有一点，component还能记录当前Activity的包名类名啥的信息哟。</p>
+<h3 id="Action-Category-amp-amp-intent-filter"><a href="#Action-Category-amp-amp-intent-filter" class="headerlink" title="Action Category&amp;&amp; intent-filter"></a>Action Category&amp;&amp; intent-filter</h3><p>这三者配合就是隐式召唤Activity的利器，你懂的。<br>我是老记不住这三者怎么配合使用，以前看的时候立马懂了。过两天没写又忘光了一些细节，还是细节重要。</p>
+<p>Action很简单，系统自带一些Action就不说了，自定义Action建一个局部变量就ok<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static final String MYACTION = &quot;com.qunar.flight.lycc.action&quot;;</span><br><span class="line">intent.setAction(MYACTION);</span><br><span class="line">startActivity()...</span><br></pre></td></tr></table></figure></p>
+<p>然后就是在Manifest中配置intent-filter了。这个谁都会啦，有什么好讲的。。。。无聊嘛，写着玩咯，写多了就记住了</p>
+<p>intent-filter中可以包含如下内容：</p>
+<ul>
+<li>0-N个action</li>
+<li>0-N个category</li>
+<li>0-1个data</li>
+</ul>
+<p>当Activity的intent-filter里有多少action它就能响应其中任意一个包含该action name的intent</p>
+<p>而category嘛，匹配规则就是一一对对应了，intent的category和intent-filter的category必须100%对应上才能正常启动，intent自带 default category,所以写了<br>intent-filter就必须包含default category，比如我们的MainActivity，intent-filter就带了个default，你可以试试删了它看能不能玩</p>
+<h3 id="data和type"><a href="#data和type" class="headerlink" title="data和type"></a>data和type</h3><p>data是用来给Action提供数据的，一般都是传入一个Uri对象格式如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scheme://host:port/path</span><br></pre></td></tr></table></figure></p>
+<p>还一个就是type属性，是用来指定data属性的MIME类型的，支持自定义，格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abc/xyz</span><br></pre></td></tr></table></figure></p>
+<p>data和type会覆盖</p>
+<ul>
+<li>如果为Intent先设置data后设置type，type覆盖data，反之同反</li>
+<li>如果希望Intent data和type都有，需要用setDataAndType()方法</li>
+</ul>
+<p>关于这部分的匹配内容，真是懒得写了，太绕了，道理却又很简单，总结一下优先级和必要性就能记住了，用的时候在网上查吧，这东西用的少记住了也没啥卵用。</p>
+<p>最后在记一个问题，就是intent的flag，面试过Android的同学估计90%都被问过这个问题，太无聊了<br>开头都是FLAG<em>ACTIVITY</em>，我就省略了</p>
+<ul>
+<li>BROUGHT_ TO_FRONT,见名知意，如果某activity已经启动过了，用这中方式调起则直接弹出到栈顶，比如A先启动了，后来又有B,C,下次再启动A就是B,C,A</li>
+<li>CLEAR_TOP 自带Single_top，例如栈内有ABCD，这时候启动B，则栈内为AB，CD被弹出来了</li>
+<li>NEW_TASK 默认启动标注，总是重新创建一个新的</li>
+<li>NO_ANIMATION 启动不带动画哦</li>
+<li>NO_HISTORY 用这个东西启动的Activity不会留在栈里，例如现有ABC，用这种方式启动D，然后再普通启动E，这时栈内只有ABCE，D被E取代了不保留，及时你没调用finish方法。</li>
+<li>SINGLE_TOP 栈内只能有一个相同的，比如ABCD，再启动一个D，还是ABCD</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/weixin.jpg" alt="Linsity wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎添加微信好友共同交流学习！</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Linsity WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Linsity Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Intent/" rel="tag">#Intent</a>
+          
+            <a href="/tags/基础知识，面试/" rel="tag">#基础知识，面试</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/11/dagger for code/" rel="next" title="详解Dagger2系列之撸码篇：横看成岭侧成峰">
+                <i class="fa fa-chevron-left"></i> 详解Dagger2系列之撸码篇：横看成岭侧成峰
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/22/parcelable/" rel="prev" title="老司机开车带你体验Parcelable到底有多快">
+                老司机开车带你体验Parcelable到底有多快 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/img.jpg"
+               alt="Linsity" />
+          <p class="site-author-name" itemprop="name">Linsity</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android基础回顾之Intent"><span class="nav-number">1.</span> <span class="nav-text">Android基础回顾之Intent</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Intent的属性"><span class="nav-number">1.1.</span> <span class="nav-text">Intent的属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#component"><span class="nav-number">1.1.1.</span> <span class="nav-text">component</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Action-Category-amp-amp-intent-filter"><span class="nav-number">1.1.2.</span> <span class="nav-text">Action Category&& intent-filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data和type"><span class="nav-number">1.1.3.</span> <span class="nav-text">data和type</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Linsity</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("oHLqUClmxU4wE3izqp2A0v3n-gzGzoHsz", "PiMxPpOCHIseO74AqSejhm5k");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+</body>
+</html>
