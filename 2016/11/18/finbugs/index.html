@@ -92,7 +92,7 @@
 <meta property="og:description" content="前言Findbugs是一款比较成熟的静态代码检查工具，能够方便准确地检查出代码中存在的一些问题，检查结果简洁明了，检查规则的可配置性也非常高，在生产环境中可以很方面的快速解决一些潜在的问题。然而默认的Findbugs给出的报告存在很多我们不关心的问题，或者说对我们业务代码基本没有影响的警告，如果不对这些内容设置过滤很大程度上会加大我们的排查成本。下面就来简单介绍下使用和配置方法以及如何在结合我们的">
 <meta property="og:image" content="http://img.blog.csdn.net/20151229102650613">
 <meta property="og:image" content="http://img.blog.csdn.net/20151229103816263">
-<meta property="og:updated_time" content="2016-11-18T07:25:39.445Z">
+<meta property="og:updated_time" content="2016-11-18T07:31:28.122Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="干货：分分钟干掉Bug之灵活地运用Findbugs过滤器">
 <meta name="twitter:description" content="前言Findbugs是一款比较成熟的静态代码检查工具，能够方便准确地检查出代码中存在的一些问题，检查结果简洁明了，检查规则的可配置性也非常高，在生产环境中可以很方面的快速解决一些潜在的问题。然而默认的Findbugs给出的报告存在很多我们不关心的问题，或者说对我们业务代码基本没有影响的警告，如果不对这些内容设置过滤很大程度上会加大我们的排查成本。下面就来简单介绍下使用和配置方法以及如何在结合我们的">
@@ -337,26 +337,26 @@
 <p>findbugs默认给的报告中有许多类型的警告是我们不关心的，所以我们需要设置一个过滤器来接受我们关注的内容过滤掉不需要的警告<br>excludeFilter就是用来配置过滤器的，过滤内容则通过findbugs-filter.xml文件来约定，也是findbugs配置中最重要的一个环节。</p>
 <p>findbugs的检查报告包括了分好几大类型的警告（Warning Type），如图中的Bad prictice Warnings,Internationalization Warnings等类型，每个类型下又有其他的代码警告(Code Warning)，如图中 的code码Nm和后面的介绍，当然其中有很多我们不关心的警告Code，比如Eq（建议用equals()来代替==进行比较的警告）UrF（提示Activity中的控件如TextView没有初始化，其实我们是通过注入初始化的）等在某些类型的警告中是我们不关注的，需要过滤掉。接下来简单说一下如何配置过滤规则。</p>
 <h3 id="过滤标签介绍"><a href="#过滤标签介绍" class="headerlink" title="过滤标签介绍"></a>过滤标签介绍</h3><ul>
-<li><p><bug> 设置警告的类型</bug></p>
+<li><p>&lt;Bug&gt; 设置警告的类型</p>
 </li>
-<li><p><confidence>设置过滤等级</confidence></p>
+<li><p>&lt;Confidence&gt;设置过滤等级</p>
 </li>
-<li><p><package>设置过滤包名</package></p>
+<li><p>&lt;Package&gt;设置过滤包名</p>
 </li>
-<li><p><class>设置过滤的类名</class></p>
+<li><p>&lt;Class&gt;设置过滤的类名</p>
 </li>
-<li><p><source>设置过滤的源文件名</p>
+<li><p>&lt;Source&gt;设置过滤的源文件名</p>
 </li>
-<li><p><method>设置过滤的方法名</method></p>
+<li><p>&lt;Method&gt;设置过滤的方法名</p>
 </li>
 </ul>
 <p>过滤组合操作符：</p>
 <ul>
-<li><p><or>或</or></p>
+<li><p>&lt;Or&gt;或</p>
 </li>
-<li><p><and>与</and></p>
+<li><p>&lt;And&gt;与</p>
 </li>
-<li><p><not>非</not></p>
+<li><p>&lt;Not&gt;非</p>
 </li>
 </ul>
 <h3 id="过滤器设置示例"><a href="#过滤器设置示例" class="headerlink" title="过滤器设置示例"></a>过滤器设置示例</h3><p>这里把国际化相关的警告全部过滤掉了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- code flaws having to do with internationalization and locale --&gt;</span><br><span class="line">   &lt;Match&gt;</span><br><span class="line">       &lt;Bug category=&quot;I18N&quot; /&gt;</span><br><span class="line">   &lt;/Match&gt;</span><br></pre></td></tr></table></figure></p>
