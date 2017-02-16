@@ -84,12 +84,16 @@
 
 
 
-<meta name="description" content="秒打多渠道包原理及实践前言由于Android国内市场比较复杂，针对一个需要推广的App来说，多渠道是一个不可避免的问题，我们在做海外版App打包发布的时候每次发布都需要发20多个渠道，原有的方案就是一个一个渠道打包，一个包大概需要4分钟左右，20多个包理论上就至少得80分钟，当然这还得在打包平台一路畅通，各种操作完美衔接的情况下才能达到，不过在实际操作过程中花费的时间远远要超过这个理论值，这就是多">
+<meta name="description" content="老签名多渠道打包原理前言由于Android7.0发布了新的签名机制，加强了签名的加固，导致在新的签名机制下无法通过美团式的方式再继续打多渠道包了。不过在说新的签名机制对打包方案的影响和为什么会影响我们原有的打包机制之前，需要先简单理解下打包原理和签名在整个打包过程中的作用。
+Android打包流程
+Android打包过程大致如图所示，整个流程就是将Java代码，资源文件以及第三方库整合成一个Apk">
 <meta property="og:type" content="article">
-<meta property="og:title" content="秒打多渠道包原理及实践">
+<meta property="og:title" content="Android7.0新签名对多渠道打包的影响">
 <meta property="og:url" content="http://yoursite.com/2016/12/07/post/index.html">
 <meta property="og:site_name" content="Maydaaa">
-<meta property="og:description" content="秒打多渠道包原理及实践前言由于Android国内市场比较复杂，针对一个需要推广的App来说，多渠道是一个不可避免的问题，我们在做海外版App打包发布的时候每次发布都需要发20多个渠道，原有的方案就是一个一个渠道打包，一个包大概需要4分钟左右，20多个包理论上就至少得80分钟，当然这还得在打包平台一路畅通，各种操作完美衔接的情况下才能达到，不过在实际操作过程中花费的时间远远要超过这个理论值，这就是多">
+<meta property="og:description" content="老签名多渠道打包原理前言由于Android7.0发布了新的签名机制，加强了签名的加固，导致在新的签名机制下无法通过美团式的方式再继续打多渠道包了。不过在说新的签名机制对打包方案的影响和为什么会影响我们原有的打包机制之前，需要先简单理解下打包原理和签名在整个打包过程中的作用。
+Android打包流程
+Android打包过程大致如图所示，整个流程就是将Java代码，资源文件以及第三方库整合成一个Apk">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1008428-b663a3f5f8c48673.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/Interflight_a.png">
 <meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/interflight_res.png">
@@ -100,10 +104,12 @@
 <meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/makepakagetime.png">
 <meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/singv2.png">
 <meta property="og:image" content="http://7xw8pi.com1.z0.glb.clouddn.com/zipstructure.png">
-<meta property="og:updated_time" content="2016-12-08T10:50:27.737Z">
+<meta property="og:updated_time" content="2017-02-16T12:39:08.354Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="秒打多渠道包原理及实践">
-<meta name="twitter:description" content="秒打多渠道包原理及实践前言由于Android国内市场比较复杂，针对一个需要推广的App来说，多渠道是一个不可避免的问题，我们在做海外版App打包发布的时候每次发布都需要发20多个渠道，原有的方案就是一个一个渠道打包，一个包大概需要4分钟左右，20多个包理论上就至少得80分钟，当然这还得在打包平台一路畅通，各种操作完美衔接的情况下才能达到，不过在实际操作过程中花费的时间远远要超过这个理论值，这就是多">
+<meta name="twitter:title" content="Android7.0新签名对多渠道打包的影响">
+<meta name="twitter:description" content="老签名多渠道打包原理前言由于Android7.0发布了新的签名机制，加强了签名的加固，导致在新的签名机制下无法通过美团式的方式再继续打多渠道包了。不过在说新的签名机制对打包方案的影响和为什么会影响我们原有的打包机制之前，需要先简单理解下打包原理和签名在整个打包过程中的作用。
+Android打包流程
+Android打包过程大致如图所示，整个流程就是将Java代码，资源文件以及第三方库整合成一个Apk">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1008428-b663a3f5f8c48673.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
 
@@ -127,7 +133,7 @@
 
   <link rel="canonical" href="http://yoursite.com/2016/12/07/post/"/>
 
-  <title> 秒打多渠道包原理及实践 | Maydaaa </title>
+  <title> Android7.0新签名对多渠道打包的影响 | Maydaaa </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -266,7 +272,7 @@
             
             
               
-                秒打多渠道包原理及实践
+                Android7.0新签名对多渠道打包的影响
               
             
           </h1>
@@ -293,7 +299,7 @@
 
           
           
-             <span id="/2016/12/07/post/" class="leancloud_visitors" data-flag-title="秒打多渠道包原理及实践">
+             <span id="/2016/12/07/post/" class="leancloud_visitors" data-flag-title="Android7.0新签名对多渠道打包的影响">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -315,30 +321,30 @@
       
 
       
-        <h1 id="秒打多渠道包原理及实践"><a href="#秒打多渠道包原理及实践" class="headerlink" title="秒打多渠道包原理及实践"></a>秒打多渠道包原理及实践</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Android国内市场比较复杂，针对一个需要推广的App来说，多渠道是一个不可避免的问题，我们在做海外版App打包发布的时候每次发布都需要发20多个渠道，原有的方案就是一个一个渠道打包，一个包大概需要4分钟左右，20多个包理论上就至少得80分钟，当然这还得在打包平台一路畅通，各种操作完美衔接的情况下才能达到，不过在实际操作过程中花费的时间远远要超过这个理论值，这就是多渠道打包开始面临的问题。当然，我们摒弃了原有的方案，在基于Android打包编译和Apk签名的一些原理上采用了新的打包方案，新方案在相同情况下只需要四分钟就能完成几十个渠道包的打包，那么具体是怎么实现的呢，这就是今天和大家分享的内容。在说清楚这件事情之前，我们需要先简单了解下Apk应用是如何制作出来的。</p>
+        <h1 id="老签名多渠道打包原理"><a href="#老签名多渠道打包原理" class="headerlink" title="老签名多渠道打包原理"></a>老签名多渠道打包原理</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于Android7.0发布了新的签名机制，加强了签名的加固，导致在新的签名机制下无法通过美团式的方式再继续打多渠道包了。不过在说新的签名机制对打包方案的<br>影响和为什么会影响我们原有的打包机制之前，需要先简单理解下打包原理和签名在整个打包过程中的作用。</p>
 <h2 id="Android打包流程"><a href="#Android打包流程" class="headerlink" title="Android打包流程"></a>Android打包流程</h2><p><img src="http://upload-images.jianshu.io/upload_images/1008428-b663a3f5f8c48673.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>Android打包过程大致如图所示，整个流程就是将Java代码，资源文件以及第三方库整合成一个Apk文件，并对整合后的文件进行签名和优化对齐。整个过程可以简单分为以下几个步骤：</p>
+<p>Android打包过程大致如图所示，整个流程就是将Java代码，资源文件以及第三方库整合成一个Apk文件，并对整合后的文件进行签名和优化对齐。整个过程可以简<br>单分为以下几个步骤：</p>
 <ul>
 <li><strong>资源预编译</strong>　　为每一个非assert资源生成一个ID并保存在一个R文件中。</li>
 <li><strong>Java文件编译</strong>　　把手动编写的Java文件和前面步骤生成的Java文件一起编译成.class文件</li>
-<li><strong>Dex文件生成</strong>　　把前面生成的class文件和第三方库的class文件一起整合成.dex文件，相当于所有.class文件的索引表，可以通过这个文件找到每一个.class文件</li>
+<li><strong>Dex文件生成</strong>　　把前面生成的class文件和第三方库的class文件一起整合成.dex文件，相当于所有.class文件的索引表，可以通过这个文件找到每一个<br>.class文件</li>
 <li><strong>资源文件打包</strong>　　对资源进行大小进行优化，并把所有有ID的资源对应的配置信息收录生成resource.arsc文件中，相当于资源的索引表。</li>
-<li><strong>APK文件生成</strong>　　把之前生成的.dex文件和resource.arsc文件以及资源文件（res文件，里面包含一些已编译成二进制的文件如布局文件等和一些未编译成二进制的文件如图片等）和未分配ID的文件（assert文件）等整合成一个APk文件（特殊的.zip文件）。</li>
+<li><strong>APK文件生成</strong>　　把之前生成的.dex文件和resource.arsc文件以及资源文件（res文件，里面包含一些已编译成二进制的文件如布局文件等和一些未编译<br>成二进制的文件如图片等）和未分配ID的文件（assert文件）等整合成一个APk文件（特殊的.zip文件）。</li>
 <li><strong>签名</strong>　　对生成的APK进行签名，添加唯一标识，从而保证能够正常安装和覆盖安装，不会被恶意覆盖，以及说明APK的来源和拥有者。</li>
 <li><strong>对齐处理</strong>　　对APK中一些资源的二进制上的位置进行调整，从而加快APk运行时的速度。</li>
 </ul>
-<p>APK生成的步骤大概就是这个样子，我们不需要纠结一些细节上的实现，只要大概了解这些流程就能理解后面我们打包方案的原理了。当然，这么看会觉得APK是一个很神奇的文件，能够安装并且运行。其实，APK只是一中比较特别的.zip文件而已，只是它可以被我们的Android机器识别并且安装成一个应用，我们可以把APK文件解压出来看一下里面的内容。<br><img src="http://7xw8pi.com1.z0.glb.clouddn.com/Interflight_a.png" alt=""><br><img src="http://7xw8pi.com1.z0.glb.clouddn.com/interflight_res.png" alt=""><br><img src="http://7xw8pi.com1.z0.glb.clouddn.com/interflight_meta.png" alt=""></p>
-<p>可以看到文件内容和我们前面说的基本一致，接下来再看看最重要的一个文件夹，就是第三章图里的文件，这些文件都在META-INF文件夹里，这就是我们在签名过程中加入的文件来作为APK的唯一标识。那么这对我们打包优化来说有什么意义呢，这里先保留下悬念，待会儿来说。在了解这个之前必须先把签名这件事情说清楚。</p>
-<h2 id="签名的作用和原理"><a href="#签名的作用和原理" class="headerlink" title="签名的作用和原理"></a>签名的作用和原理</h2><h3 id="签名的作用"><a href="#签名的作用" class="headerlink" title="签名的作用"></a>签名的作用</h3><p>Android App在开发时都有一个唯一的标识，我们把它叫做包名，比如大客户端的包名是com.Quanr，包名就像身份证号一样，是和每一个人一一对应的，在把App安装时机器也是通过包名来识别应用的，一个机器中不能存在两个包名一样的应用，这就是App在机器中的唯一性。我们在给App升级的时候，比如覆盖安装，就是通过包名来进行识别和对应的覆盖，这样才能保证App可以顺利升级而不会覆盖了其他的App，同样，别的App包名不同也无法覆盖我们的App。虽然Android提供了一套包名识别机制，但仅有包名就可以了吗。试想一下，如果别人用我们的包名新建一个App想要覆盖我们的App亦或是不法分子破解我们的App往里面添加一些自己的内容，比如内嵌广告来牟利，把篡改过的App再发出去让用户覆盖安装，我们可能会受到巨大的损失。当然这种事情是不会发生的，Google为每一个App增加了一个签名机制，就像我们去银行办理业务，不但要提供身份证，还要签字画押，身份证号大家都可以看到，但签字画押只有自己才能做，别人是无法模仿的，App正是通过这种机制保证了自身的唯一性和安全性。那么，签名是如何做到这些的呢。</p>
-<h3 id="签名的原理"><a href="#签名的原理" class="headerlink" title="签名的原理"></a>签名的原理</h3><p>对Apk签名有好几种工具，但原理都是大同小异的，这里拿signapk这个工具来说，对apk签名只要用这个工具附带一些参数以及我们的唯一的签名文件就可以完成了，直接使用工具签名是很简单的，我们更需要关注的是它的原理和具体是怎么实现的，这样才能帮助我们从中找出打渠道包的秘密。在使用签名工具之前我们必须准备好签名要用的私钥和公钥（a–(私钥)–&gt;b–(公钥）–&gt;a,最好用图片展示），然后再用签名工具对apk签名，之后签名流程会在apk里新建META-INF文件夹并在里面生成三个文件，这三个文件就是签名的关键和验证的依据。从图中可以看到三个文件分别是：</p>
+<p>APK生成的步骤大概就是这个样子，我们不需要纠结一些细节上的实现，只要大概了解这些流程就能理解后面我们打包方案的原理了。当然，这么看会觉得APK<br>是一个很神奇的文件，能够安装并且运行。其实，APK只是一中比较特别的.zip文件而已，只是它可以被我们的Android机器识别并且安装成一个应用，我们可<br>以把APK文件解压出来看一下里面的内容。<br><img src="http://7xw8pi.com1.z0.glb.clouddn.com/Interflight_a.png" alt=""><br><img src="http://7xw8pi.com1.z0.glb.clouddn.com/interflight_res.png" alt=""><br><img src="http://7xw8pi.com1.z0.glb.clouddn.com/interflight_meta.png" alt=""></p>
+<p>可以看到文件内容和我们前面说的基本一致，接下来再看看最重要的一个文件夹，就是第三章图里的文件，这些文件都在META-INF文件夹里，这就是我们在签<br>名过程中加入的文件来作为APK的唯一标识。那么这对我们打包优化来说有什么意义呢，这里先保留下悬念，待会儿来说。在了解这个之前必须先把签名这件<br>事情说清楚。</p>
+<h2 id="签名的作用和原理"><a href="#签名的作用和原理" class="headerlink" title="签名的作用和原理"></a>签名的作用和原理</h2><h3 id="签名的作用"><a href="#签名的作用" class="headerlink" title="签名的作用"></a>签名的作用</h3><p>Android App在开发时都有一个唯一的标识，我们把它叫做包名，比如大客户端的包名是com.Quanr，包名就像身份证号一样，是和每一个人一一对应的，在<br>把App安装时机器也是通过包名来识别应用的，一个机器中不能存在两个包名一样的应用，这就是App在机器中的唯一性。我们在给App升级的时候，比如覆盖<br>安装，就是通过包名来进行识别和对应的覆盖，这样才能保证App可以顺利升级而不会覆盖了其他的App，同样，别的App包名不同也无法覆盖我们的App。虽<br>然Android提供了一套包名识别机制，但仅有包名就可以了吗。试想一下，如果别人用我们的包名新建一个App想要覆盖我们的App亦或是不法分子破解我们的<br>App往里面添加一些自己的内容，比如内嵌广告来牟利，把篡改过的App再发出去让用户覆盖安装，我们可能会受到巨大的损失。当然这种事情是不会发生的<br>，Google为每一个App增加了一个签名机制，就像我们去银行办理业务，不但要提供身份证，还要签字画押，身份证号大家都可以看到，但签字画押只有自己<br>才能做，别人是无法模仿的，App正是通过这种机制保证了自身的唯一性和安全性。那么，签名是如何做到这些的呢。</p>
+<h3 id="签名的原理"><a href="#签名的原理" class="headerlink" title="签名的原理"></a>签名的原理</h3><p>对Apk签名有好几种工具，但原理都是大同小异的，这里拿signapk这个工具来说，对apk签名只要用这个工具附带一些参数以及我们的唯一的签名文件就可以<br>完成了，直接使用工具签名是很简单的，我们更需要关注的是它的原理和具体是怎么实现的，这样才能帮助我们从中找出打渠道包的秘密。在使用签名工具<br>之前我们必须准备好签名要用的私钥和公钥（a–(私钥)–&gt;b–(公钥）–&gt;a,最好用图片展示），然后再用签名工具对apk签名，之后签名流程会在apk里新<br>建META-INF文件夹并在里面生成三个文件，这三个文件就是签名的关键和验证的依据。从图中可以看到三个文件分别是：</p>
 <ul>
 <li>MANIFEST.MF</li>
 <li>CERT.RSA</li>
 <li>CERT.SF<br>接下来说说这三个文件是怎么生成的。<h3 id="MANIFEST-MF"><a href="#MANIFEST-MF" class="headerlink" title="MANIFEST.MF"></a>MANIFEST.MF</h3><img src="http://img.blog.csdn.net/20151225141041511?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></li>
 </ul>
-<p>先看看它的内容，可以看到是一些Name对应的SHA1的值，很容易就能知道这个文件保存的是每一个文件对应的一个唯一的值。MANIIFEST.MF文件的功能就如刚才说的一样，在对APK签名的时候，首先会对每一个文件进行数字编码，生成一个唯一的SHA1的值，不同的文件内容不一样所对应的SHA1的值也是不同的，所以如果有人篡改了文件内容，那么相应的SHA1的值也会发生变化。在对APK进行签名的时候检查自己的每一个文件，并生成对应的SHA1值，把这些内容都保存在一个新建的MANIFEST.MF文件中，并把这个文件放到META-INF目录下，就完成了第一个签名文件的生成。</p>
+<p>先看看它的内容，可以看到是一些Name对应的SHA1的值，很容易就能知道这个文件保存的是每一个文件对应的一个唯一的值。MANIIFEST.MF文件的功能就如<br>刚才说的一样，在对APK签名的时候，首先会对每一个文件进行数字编码，生成一个唯一的SHA1的值，不同的文件内容不一样所对应的SHA1的值也是不同的，<br>所以如果有人篡改了文件内容，那么相应的SHA1的值也会发生变化。在对APK进行签名的时候检查自己的每一个文件，并生成对应的SHA1值，把这些内容都保<br>存在一个新建的MANIFEST.MF文件中，并把这个文件放到META-INF目录下，就完成了第一个签名文件的生成。</p>
 <h3 id="CERT-SF"><a href="#CERT-SF" class="headerlink" title="CERT.SF"></a>CERT.SF</h3><p><img src="http://img.blog.csdn.net/20151225144009779?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
-<p>在生成了一个MANIFEST.MF文件之后，就能记录下我们每一个文件的唯一值，从而保证文件不被篡改，这样虽然保证了MANIFEST中记录文件的安全，但却无法保证自身的安全，别人照样可以修改原有文件之后生成对应的SHA1值然后再修改MANIFEST文件，所以我们还要对MANIFEST进行加固，从而保证安全性。在进行完第一个文件生成后，签名工具开始生成第二个文件了，这个文件就是CERT.RSA。在这个步骤里，对上一步生成的文件继续进行一次数字编码，把结果保存在这个新生成了CERT.RSA文件的头部，在继续对MANIFEST.MF文件中各个属性块做一次数字编码，存到到CERT.SF文件的一个属性块中。</p>
+<p>在生成了一个MANIFEST.MF文件之后，就能记录下我们每一个文件的唯一值，从而保证文件不被篡改，这样虽然保证了MANIFEST中记录文件的安全，但却无法<br>保证自身的安全，别人照样可以修改原有文件之后生成对应的SHA1值然后再修改MANIFEST文件，所以我们还要对MANIFEST进行加固，从而保证安全性。在进行<br>完第一个文件生成后，签名工具开始生成第二个文件了，这个文件就是CERT.RSA。在这个步骤里，对上一步生成的文件继续进行一次数字编码，把结果保存在<br>这个新生成了CERT.RSA文件的头部，在继续对MANIFEST.MF文件中各个属性块做一次数字编码，存到到CERT.SF文件的一个属性块中。</p>
 <h3 id="CERT-RSA"><a href="#CERT-RSA" class="headerlink" title="CERT.RSA"></a>CERT.RSA</h3><p><img src="http://img.blog.csdn.net/20151225150450393?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
 <p>这个文件都是二进制的，生成完CERT.SF文件之后，我们用私钥对CERT.SF进行加密计算得出签名，将得到的签名和公钥的数字证书的信息一起保存到CERT.RSA中，整个签名过程就结束了。</p>
 <p>下面再简单叙述一下Apk安装过程中的验证步骤，其实就是和生成签名文件的步骤类似：</p>
@@ -347,9 +353,8 @@
 <li>验证CERT.SF文件的签名信息和CERT.RSA中的内容是否一致</li>
 <li>MANIFEST.MF整个文件签名在CERT.SF文件中头属性中的值是否匹配以及验证MANIFEST.MF文件中的各个属性块的签名在CERT.SF文件中是否匹配</li>
 </ul>
-<p>从上面的过程中，可以很明显的发现一个问题，在这个过程中从来就没有对META-INF里的任何文件进行数字编码和加密，因为这个文件夹是签名时生成的，在生成第一个文件MANIFEST.MF时并没有对这个文件夹里的任何文件进行数字编码，因为这个文件夹一定是空的，第二个文件是基于第一个文件生成的，第三个文件又是基于第二个生成的，所以整个过程中，这个META-INF文件夹几乎是在控制范围之外的。我们可以在里面添加一些文件从而躲过签名这个过程。这就是新打包方案的Tip。</p>
-<h2 id="老方案VS新方案"><a href="#老方案VS新方案" class="headerlink" title="老方案VS新方案"></a>老方案VS新方案</h2><h3 id="老方案"><a href="#老方案" class="headerlink" title="老方案"></a>老方案</h3><p>在开始进行多渠道打包时，由于各个渠道的功能完全是一致的，只有在数据统计的时候渠道参数是不同的，我们没有必要去修改代码来改变渠道，而对生成的APK来说，由于签名限制，直接修改APK文件看起来也是违反签名规则的，所以我们一开始能想到的办法就是在生成打包之前动态修改渠道参数，这样既不用修改代码（只有开发能修改，打包的同学可能修改不来），也不用动APK文件，就可以实现了。我们的做法是在代码中留了一个参数入口来记录渠道，这个参数只需要在打包的过程输入就行了，每个Apk的渠道不同，打多渠道不需要修改代码只需要修改打包时传入的渠道参数即可完成多渠道打包，这是原始的方案，原理很简单。从我们开始了解到的打包流程可以知道，这个方案需要每次打包前传入渠道参数，所以有几个渠道就需要打几次包，，打包过程是非常耗时的。这也是海外版多渠道包一开始需要几个小时才能完成。</p>
-<h3 id="新方案"><a href="#新方案" class="headerlink" title="新方案"></a>新方案</h3><p>通过前面打包过程的了解，可以知道老方案是有很大优化空间的，老方案之所以耗时，最主要的原因是要不断的根据渠道号的数量进行打包，所以非常耗时，那么最简单的优化方案就是跳过打包的阶段直接想办法对Apk文件进行修改，但这得挑战Android的签名校验规则了，不过正好，通过刚才我们对签名过程的分析，我们发现可以在META-INF文件夹里随意添加文件从而躲过签名规则的检查，这时候新方案就孕育而生了，在打包生成了一个没有渠道的Apk文件后，我们copy这个Apk并在在META-INF里添加一个文件，然后通过文件名来确定渠道号，不同的Apk里就在META-INF里添加不同的渠道名文件，即可确定不同的渠道了，之后要做的就是在我们需要渠道参数的时候直接去这个文件里拿就行了，完美的跳过了打包这个过程。那么这种方案的耗时呢？仅仅就是基于一个Apk文件的基础上复制并插入一个文件而已，这样的动作在高配的电脑里一分钟可以做900次。所以，这时候打一个渠道包要4分钟，打20个渠道包也只要四分钟加一个小零头，相对于原来理论上的80分钟，效率提高了20倍。当然，这还不是极限，如果有900个渠道的话，老方案要900x4分钟，新方案只要5分钟，提高了好几百倍的效率，可以说新方案是非常完美的。</p>
+<p>从上面的过程中，可以很明显的发现一个问题，在这个过程中从来就没有对META-INF里的任何文件进行数字编码和加密，因为这个文件夹是签名时生成的，在<br>生成第一个文件MANIFEST.MF时并没有对这个文件夹里的任何文件进行数字编码，因为这个文件夹一定是空的，第二个文件是基于第一个文件生成的，第三个<br>文件又是基于第二个生成的，所以整个过程中，这个META-INF文件夹几乎是在控制范围之外的。我们可以在里面添加一些文件从而躲过签名这个过程。这就是<br>美团多渠道包方案的突破口。</p>
+<h2 id="美团通过利用签名原理来完成多渠道打包"><a href="#美团通过利用签名原理来完成多渠道打包" class="headerlink" title="美团通过利用签名原理来完成多渠道打包"></a>美团通过利用签名原理来完成多渠道打包</h2><p>通过前面打包过程的了解，可以知道想快速打多渠道包，就得跳过打包的阶段直接想办法对Apk文件进行修改，但这得挑战Android的签名校验规则了，不过正好，通过刚才我们对签名过程的分<br>析，我们发现可以在META-INF文件夹里随意添加文件从而躲过签名规则的检查，这时候新方案就孕育而生了，在打包生成了一个没有渠道的Apk文件后，我们<br>copy这个Apk并在在META-INF里添加一个文件，然后通过文件名来确定渠道号，不同的Apk里就在META-INF里添加不同的渠道名文件，即可确定不同的渠道了<br>，之后要做的就是在我们需要渠道参数的时候直接去这个文件里拿就行了，完美的跳过了打包这个过程。那么这种方案的耗时呢？仅仅就是基于一个Apk文件<br>的基础上复制并插入一个文件而已，这样的动作在高配的电脑里一分钟可以做900次。所以，这时候打一个渠道包要4分钟，打100个渠道包也只要四分钟加一<br>个小零头，当然，这还不是极限，如果有900个渠道的话，一个个渠道包打包需要900x4分钟，美团方案只要5分钟，提高了<br>好几百倍的效率，可以说美团方案在老签名下是非常完美的。</p>
 <p><img src="http://7xw8pi.com1.z0.glb.clouddn.com/makepakagetime.png" alt=""></p>
 <h2 id="新签名方式对现有方案的影响"><a href="#新签名方式对现有方案的影响" class="headerlink" title="新签名方式对现有方案的影响"></a>新签名方式对现有方案的影响</h2><p>在Android 7.0 之后，Google为了增强签名的安全性，采用了新的签名验证规则，不是针对每个文件来进行数字编码了，如图所示：</p>
 <p><img src="http://7xw8pi.com1.z0.glb.clouddn.com/singv2.png" alt=""></p>
@@ -362,16 +367,16 @@
 <p>下图中蓝色的部分代表Contents of ZIP entries,粉色的部分代表Central Directory。</p>
 <p>File Entry表示一个文件实体,一个压缩文件中有多个文件实体。<br>文件实体由一个头部和文件数据组成(压缩后的,压缩算法在头部有说明)<br>Central Directory由多个File header组成,每个File header都保存一个文件实体的偏移<br>文件最后由一个叫End of central directory的结构结束。</p>
 <p><img src="http://7xw8pi.com1.z0.glb.clouddn.com/zipstructure.png" alt=""></p>
-<p>再看看End of Central Directory的作用，它记录了Central Directory相对于头部的偏移位置，再看看我们的新签名数据Apk Signing Block是放在<br>Contents of ZIP entries和Central Directory之间的，它是根据未签名的ZIP文件三个模块的所有内容进行编码签名后产生的一个唯一的数据，可以按照前面说的数字编码来理解，这三块任何内容发生改变后所产生的这块的数据都是不一致的，所以在签名之后无法对Apk的任何内容进行修改，不过我们前面也没修改过Apk签名之外的内容，所以这个时候是不是可以考虑修改Apk Signing Block这块内容呢，我们在后面再追加一个小尾巴。显然这个方法也不行了，前面说过最后有一个叫End of Central Direcotry的部分，记录着Central Direcotry相对与ZIP文件起始位置的偏移，正好APK Signing Block位于Central Direcotry前面，如果改变APK Signing Block的长度那么Central Direcotry相对于头部的偏移就改变了，内容就会和End of Central Directory里记录的不一样，整个Apk包就被破坏了。那么是不是可以修改这个偏移呢，显然不行，修改过这个偏移之后Apk Signing Block 也会变，然后只有拥有签名文件的开发者才能得到对的APK Signing Block数据，想要篡改这个的人只能望洋兴叹了。这就是新签名机制的作用原理。在这套新的机制下，我们老的签名可能就要进行适当的修改了。</p>
-<h2 id="改进方案的思路"><a href="#改进方案的思路" class="headerlink" title="改进方案的思路"></a>改进方案的思路</h2><p>前面说过了，我们新的打包方案在新的签名机制下又要捉襟见肘了，不过，我们Google有张良计，我们还有过墙梯~</p>
+<p>再看看End of Central Directory的作用，它记录了Central Directory相对于头部的偏移位置，再看看我们的新签名数据Apk Signing Block是放在<br>Contents of ZIP entries和Central Directory之间的，它是根据未签名的ZIP文件三个模块的所有内容进行编码签名后产生的一个唯一的数据，可以<br>按照前面说的数字编码来理解，这三块任何内容发生改变后所产生的这块的数据都是不一致的，所以在签名之后无法对Apk的任何内容进行修改，不<br>过我们前面也没修改过Apk签名之外的内容，所以这个时候是不是可以考虑修改Apk Signing Block这块内容呢，我们在后面再追加一个小尾巴。显然<br>这个方法也不行了，前面说过最后有一个叫End of Central Direcotry的部分，记录着Central Direcotry相对与ZIP文件起始位置的偏移，正好APK S<br>igning Block位于Central Direcotry前面，如果改变APK Signing Block的长度那么Central Direcotry相对于头部的偏移就改变了，内容就会和End<br>of Central Directory里记录的不一样，整个Apk包就被破坏了。那么是不是可以修改这个偏移呢，显然不行，修改过这个偏移之后Apk Signing Block<br>也会变，然后只有拥有签名文件的开发者才能得到对的APK Signing Block数据，想要篡改这个的人只能望洋兴叹了。这就是新签名机制的作用原理。在<br>这套新的机制下，我们老的签名可能就要进行适当的修改了。</p>
+<h2 id="改进方案的思路"><a href="#改进方案的思路" class="headerlink" title="改进方案的思路"></a>改进方案的思路</h2><p>前面说过了，我们新的打包方案在新的签名机制下又要捉襟见肘了（当然，如果你还采用老签名的话那么就不需要考虑这个问题了），不过，Google有张良计，我们还有过墙梯~</p>
 <p>之前说过添加渠道包有好几种方式：</p>
 <ul>
 <li>直接修改代码，一个渠道包改一次代码，然后再打包</li>
 <li>不直接修改代码，放出一个渠道参数在打包之前动态改变然后再打包</li>
 <li>修改打包完成后的文件通过跳过签名校验加入渠道号</li>
-<li>现在这三种方式都不行了，没关系，我们还有第四中。<br>之前分析过，如果修改了zip文件的任何模块内容，APK Signing Block都会发生改变，从而无法再绕过签名机制。<br>不过这个不要紧，签名机制只是为了保障我们Apk的安全，我们显然不是想恶意篡改App，我们可是开发者，手握着签名文件的私钥和公钥，既然签名机制绕不过去，那么我们就直接修改Apk包然后重新进行签名就行了。虽然这样的效率没有绕过签名机制效率高，但相比于好几分钟的打包过程，这些时间也是可以接受的。一般重新签名大概需要三四秒的时间，相对与我们四分钟的打包流程，显然还是可以接受和继续使用的。</li>
+<li>现在这三种方式都不行了，没关系，我们还有第四中。<br>之前分析过，如果修改了zip文件的任何模块内容，APK Signing Block都会发生改变，从而无法再绕过签名机制。<br>不过这个不要紧，签名机制只是为了保障我们Apk的安全，我们显然不是想恶意篡改App，我们可是开发者，手握着签名文件的私钥和公钥，既然签名机制<br>绕不过去，那么我们就直接修改Apk包然后重新进行签名就行了。虽然这样的效率没有绕过签名机制效率高，但相比于好几分钟的打包过程，这些时间也是<br>可以接受的。一般重新签名大概需要三四秒的时间，相对与我们四分钟的打包流程，显然还是可以接受和继续使用的。</li>
 </ul>
-<p>当然，这只是基于我们签名机制想出来的一个 方案，之前和大家分析了打包和签名的整个流程和 机制，也许还有更好的方式可以从中挖掘出来，这就需要我们集思广益了，仔细分析和思考这些流程和原理，也许你就能找出更好的解决方案来继续优化我们的打包方案~</p>
+<p>当然，这只是基于我们签名机制想出来的一个方案，之前和大家分析了打包和签名的整个流程和机制，也许还有更好的方式可以从中挖掘出来，这就需<br>要我们集思广益了，仔细分析和思考这些流程和原理，也许你就能找出更好的解决方案来继续优化我们的打包方案~</p>
 <h2 id="In-the-End"><a href="#In-the-End" class="headerlink" title="In the End"></a>In the End</h2><p><strong>Quest &amp;&amp; Answer</strong></p>
 <p>That’s All ,Thx.</p>
 
@@ -546,7 +551,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#秒打多渠道包原理及实践"><span class="nav-number">1.</span> <span class="nav-text">秒打多渠道包原理及实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android打包流程"><span class="nav-number">1.2.</span> <span class="nav-text">Android打包流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#签名的作用和原理"><span class="nav-number">1.3.</span> <span class="nav-text">签名的作用和原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#签名的作用"><span class="nav-number">1.3.1.</span> <span class="nav-text">签名的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#签名的原理"><span class="nav-number">1.3.2.</span> <span class="nav-text">签名的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MANIFEST-MF"><span class="nav-number">1.3.3.</span> <span class="nav-text">MANIFEST.MF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CERT-SF"><span class="nav-number">1.3.4.</span> <span class="nav-text">CERT.SF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CERT-RSA"><span class="nav-number">1.3.5.</span> <span class="nav-text">CERT.RSA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#老方案VS新方案"><span class="nav-number">1.4.</span> <span class="nav-text">老方案VS新方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#老方案"><span class="nav-number">1.4.1.</span> <span class="nav-text">老方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新方案"><span class="nav-number">1.4.2.</span> <span class="nav-text">新方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新签名方式对现有方案的影响"><span class="nav-number">1.5.</span> <span class="nav-text">新签名方式对现有方案的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进方案的思路"><span class="nav-number">1.6.</span> <span class="nav-text">改进方案的思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#In-the-End"><span class="nav-number">1.7.</span> <span class="nav-text">In the End</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#老签名多渠道打包原理"><span class="nav-number">1.</span> <span class="nav-text">老签名多渠道打包原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android打包流程"><span class="nav-number">1.2.</span> <span class="nav-text">Android打包流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#签名的作用和原理"><span class="nav-number">1.3.</span> <span class="nav-text">签名的作用和原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#签名的作用"><span class="nav-number">1.3.1.</span> <span class="nav-text">签名的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#签名的原理"><span class="nav-number">1.3.2.</span> <span class="nav-text">签名的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MANIFEST-MF"><span class="nav-number">1.3.3.</span> <span class="nav-text">MANIFEST.MF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CERT-SF"><span class="nav-number">1.3.4.</span> <span class="nav-text">CERT.SF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CERT-RSA"><span class="nav-number">1.3.5.</span> <span class="nav-text">CERT.RSA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#美团通过利用签名原理来完成多渠道打包"><span class="nav-number">1.4.</span> <span class="nav-text">美团通过利用签名原理来完成多渠道打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新签名方式对现有方案的影响"><span class="nav-number">1.5.</span> <span class="nav-text">新签名方式对现有方案的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进方案的思路"><span class="nav-number">1.6.</span> <span class="nav-text">改进方案的思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#In-the-End"><span class="nav-number">1.7.</span> <span class="nav-text">In the End</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
